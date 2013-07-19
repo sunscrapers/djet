@@ -21,7 +21,7 @@ class RequestFactoryTest(django_test.TestCase):
 
         self.assertIsInstance(request, WSGIRequest)
 
-    def test_create_request_should_return_request_with_session(self):
+    def test_create_request_should_return_request_processes_by_middleware(self):
         request = self.factory.create_request(
             self.factory.Method.GET,
             middleware_classes=[
@@ -38,12 +38,14 @@ class MockView(generic.View):
 
 class ViewTestCaseTest(viewtestcase.ViewTestCase):
     view_class = MockView
+    middleware_classes = [MockMiddleware]
 
     def test_init_should_create_view_method_when_view_class_provided(self):
         self.assertIsInstance(self.view, types.FunctionType)
 
-    def test_init_should_create_factory_instance(self):
+    def test_init_should_create_factory_instance_with_middleware_classes(self):
         self.assertIsInstance(self.factory, viewtestcase.RequestFactory)
+        self.assertIn(MockMiddleware, self.factory.middleware_classes)
 
     def test_assert_not_redirect_should_pass_when_view_not_redirect(self):
         request = self.factory.create_request(self.factory.Method.GET)
