@@ -7,11 +7,12 @@ Example
 =======
 
 ```python
+import viewtestcase
 from django.contrib import messages
 from django.contrib.messages.storage.base import Message
 from django.contrib.messages.middleware import MessageMiddleware
 from django.contrib.sessions.middleware import SessionMiddleware
-import viewtestcase
+
 from yourapp.views import YourView
 
 
