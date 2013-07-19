@@ -36,7 +36,7 @@ class YourViewTest(viewtestcase.ViewTestCase):
 
         self.assert_redirect(response, data['next'])
         self.assertIn(
-            Message(level=level, message=message),
+            Message(level=messages.SUCCESS, message='Success!'),
             messages.get_messages(request),
         )
 ```
