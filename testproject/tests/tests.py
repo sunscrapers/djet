@@ -31,6 +31,11 @@ class RequestFactoryTest(django_test.TestCase):
 
         self.assertTrue(request.middleware_was_here)
 
+    def test_init_should_create_shortcuts(self):
+        request = self.factory.create_get_request()
+
+        self.assertEqual(request.method.lower(), self.factory.Method.GET)
+
 
 class MockView(generic.View):
     pass

@@ -24,17 +24,11 @@ class YourViewTest(viewtestcase.ViewTestCase):
     ]
 
     def test_post_should_redirect_and_add_message_when_next_parameter(self):
-        data = {
-            'next': '/'
-        }
-        request = self.factory.create_request(
-            method=self.factory.Method.POST,
-            data=data,
-        )
+        request = self.factory.create_get_request(data={'next': '/'})
 
         response = self.view(request)
 
-        self.assert_redirect(response, data['next'])
+        self.assert_redirect(response, '/')
         self.assertIn(
             Message(level=messages.SUCCESS, message='Success!'),
             messages.get_messages(request),

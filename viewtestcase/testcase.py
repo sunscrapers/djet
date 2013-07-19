@@ -1,3 +1,4 @@
+from functools import partial
 from django.http import HttpResponseRedirect, HttpResponsePermanentRedirect
 from django import test as django_test
 
@@ -5,16 +6,19 @@ from django import test as django_test
 class RequestFactory(django_test.RequestFactory):
 
     class Method:
-        GET = 'get'
-        POST = 'post'
-        HEAD = 'head'
-        DELETE = 'delete'
-        OPTIONS = 'options'
-        PUT = 'put'
+        ALL = GET, POST, HEAD, DELETE, OPTIONS, PUT = (
+            'get',
+            'post',
+            'head',
+            'delete',
+            'options',
+            'put',
+        )
 
     def __init__(self, middleware_classes=None, **defaults):
         super(RequestFactory, self).__init__(**defaults)
         self.middleware_classes = middleware_classes or []
+        self._initialize_shortcuts()
 
     def create_request(self, method, data=None, user=None, path='',
                        middleware_classes=None):
@@ -22,6 +26,11 @@ class RequestFactory(django_test.RequestFactory):
         request.user = user
         self._process_middleware_classes(middleware_classes or [], request)
         return request
+
+    def _initialize_shortcuts(self):
+        for method in self.Method.ALL:
+            shortcut = partial(self.create_request, method)
+            setattr(self, 'create_{0}_request'.format(method), shortcut)
 
     def _process_middleware_classes(self, middleware_classes, request):
         for mw_class in self.middleware_classes + middleware_classes:
