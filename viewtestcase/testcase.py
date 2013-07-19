@@ -16,10 +16,9 @@ class RequestFactory(django_test.RequestFactory):
         super(RequestFactory, self).__init__(**defaults)
         self.middleware_classes = middleware_classes or []
 
-    def create_request(self, name, data=None, user=None, path='',
+    def create_request(self, method, data=None, user=None, path='',
                        middleware_classes=None):
-        method = getattr(self, name.lower())
-        request = method(path, data or {})
+        request = getattr(self, method.lower())(path, data or {})
         request.user = user
         self._process_middleware_classes(middleware_classes or [], request)
         return request
