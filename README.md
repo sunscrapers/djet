@@ -30,9 +30,7 @@ from django.contrib import messages
 from django.contrib.messages.storage.base import Message
 from django.contrib.messages.middleware import MessageMiddleware
 from django.contrib.sessions.middleware import SessionMiddleware
-
 from yourapp.views import YourView
-
 
 class YourViewTest(viewtestcase.ViewTestCase):
     view_class = YourView
@@ -55,13 +53,13 @@ class YourViewTest(viewtestcase.ViewTestCase):
 
 If you want to test function-based view you should do it like this (we know it is not pretty, but you can probably
 live it with for now):
-```
+```python
 class YourFunctionViewTest(viewtestcase.ViewTestCase):
     view = staticmethod(tested_view_function)
 ```
 
 There is no special method for testing single view methods, because it is really easy to do something like:
-```
+```python
 class YourViewObjectMethodTest(viewtestcase.ViewTestCase):
     view_class = YourView
 
