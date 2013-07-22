@@ -2,6 +2,7 @@ django-viewtestcase
 ===================
 
 Extended TestCase for easy unit testing of Django views.
+
 [![Build Status](https://travis-ci.org/sunscrapers/django-viewtestcase.png)](https://travis-ci.org/sunscrapers/django-viewtestcase)
 
 Why django-viewtestcase?
@@ -20,8 +21,8 @@ additional assertions like `assert_redirect` in ViewTestCase.
 Sometimes middlewares are required for view to test it, so there is an option to specify which middlewares
 should be used in a single test or whole test case by giving `middleware_classes` argument.
 
-Example
-=======
+Examples
+========
 
 ```python
 import viewtestcase
