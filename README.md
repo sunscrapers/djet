@@ -24,7 +24,7 @@ class YourViewTest(viewtestcase.ViewTestCase):
     ]
 
     def test_post_should_redirect_and_add_message_when_next_parameter(self):
-        request = self.factory.create_get_request(data={'next': '/'})
+        request = self.factory.create_post_request(data={'next': '/'})
 
         response = self.view(request)
 
