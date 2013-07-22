@@ -1,6 +1,7 @@
 import types
 from django.core.handlers.wsgi import WSGIRequest
 from django import test as django_test
+from django.http import HttpResponse
 from django.views import generic
 import viewtestcase
 
@@ -41,6 +42,10 @@ class MockView(generic.View):
     pass
 
 
+def mock_function_view(request):
+    return HttpResponse(status=200)
+
+
 class ViewTestCaseTest(viewtestcase.ViewTestCase):
     view_class = MockView
     middleware_classes = [MockMiddleware]
@@ -66,3 +71,14 @@ class ViewTestCaseTest(viewtestcase.ViewTestCase):
         response = view(request)
 
         self.assert_redirect(response)
+
+
+class ViewTestCaseFunctionViewTest(viewtestcase.ViewTestCase):
+    view = staticmethod(mock_function_view)
+
+    def test_assert_response_when_function_view_used(self):
+        request = self.factory.create_request(self.factory.Method.GET)
+
+        response = self.view(request)
+
+        self.assertEqual(response.status_code, 200)
