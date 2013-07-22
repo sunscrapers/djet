@@ -39,7 +39,9 @@ class RequestFactoryTest(django_test.TestCase):
 
 
 class MockView(generic.View):
-    pass
+
+    def mock_method(self):
+        self.mock_method_called = True
 
 
 def mock_function_view(request):
@@ -71,6 +73,13 @@ class ViewTestCaseTest(viewtestcase.ViewTestCase):
         response = view(request)
 
         self.assert_redirect(response)
+
+    def test_creating_view_object(self):
+        view_object = self.view_class()
+
+        view_object.mock_method()
+
+        self.assertTrue(view_object.mock_method_called)
 
 
 class ViewTestCaseFunctionViewTest(viewtestcase.ViewTestCase):
