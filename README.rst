@@ -27,9 +27,9 @@ alternative.
 
 **django-viewtestcase** makes it easier to make better unit tests for
 your views. Instead of ``self.client`` you will use ``self.factory``
-which is an extended ``RequestFactory`` with useful shortcuts for
-creating requests. There are also some additional assertions like
-``assert_redirect`` in ViewTestCase.
+which is an extended ``RequestFactory`` with overridden shortcuts for
+creating requests (eg. ``path`` is not required parameter). There are
+also some additional assertions like ``assert_redirect`` in ViewTestCase.
 
 Sometimes middlewares are required for view to test it, so there is an
 option to specify which middlewares should be used in a single test or
@@ -55,7 +55,7 @@ Examples
         ]
 
         def test_post_should_redirect_and_add_message_when_next_parameter(self):
-            request = self.factory.create_post_request(data={'next': '/'})
+            request = self.factory.post(data={'next': '/'})
 
             response = self.view(request)
 
@@ -65,13 +65,12 @@ Examples
                 messages.get_messages(request),
             )
 
-If you want to test function-based view you should do it like this (we
-know it is not pretty, but you can probably live it with for now):
+If you want to test function-based view you should do it like this:
 
 .. code:: python
 
     class YourFunctionViewTest(viewtestcase.ViewTestCase):
-        view = staticmethod(tested_view_function)
+        view_function = tested_view_function
 
 There is no special method for testing single view methods, because it
 is really easy to do something like:

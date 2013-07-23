@@ -18,13 +18,12 @@ class RequestFactoryTest(django_test.TestCase):
         self.factory = viewtestcase.RequestFactory()
 
     def test_create_request_should_return_request(self):
-        request = self.factory.create_request(self.factory.Method.GET)
+        request = self.factory.get()
 
         self.assertIsInstance(request, WSGIRequest)
 
     def test_create_request_should_return_request_processes_by_middleware(self):
-        request = self.factory.create_request(
-            self.factory.Method.GET,
+        request = self.factory.get(
             middleware_classes=[
                 MockMiddleware,
             ]
@@ -33,9 +32,9 @@ class RequestFactoryTest(django_test.TestCase):
         self.assertTrue(request.middleware_was_here)
 
     def test_init_should_create_shortcuts(self):
-        request = self.factory.create_get_request()
+        request = self.factory.get()
 
-        self.assertEqual(request.method.lower(), self.factory.Method.GET)
+        self.assertEqual(request.method, 'GET')
 
 
 class MockView(generic.View):
@@ -60,7 +59,7 @@ class ViewTestCaseTest(viewtestcase.ViewTestCase):
         self.assertIn(MockMiddleware, self.factory.middleware_classes)
 
     def test_assert_not_redirect_should_pass_when_view_not_redirect(self):
-        request = self.factory.create_request(self.factory.Method.GET)
+        request = self.factory.get()
 
         response = self.view(request)
 
@@ -68,7 +67,7 @@ class ViewTestCaseTest(viewtestcase.ViewTestCase):
 
     def test_assert_redirect_should_pass_when_view_redirect(self):
         view = generic.RedirectView.as_view(url='/')
-        request = self.factory.create_request(self.factory.Method.GET)
+        request = self.factory.get()
 
         response = view(request)
 
@@ -83,10 +82,10 @@ class ViewTestCaseTest(viewtestcase.ViewTestCase):
 
 
 class ViewTestCaseFunctionViewTest(viewtestcase.ViewTestCase):
-    view = staticmethod(mock_function_view)
+    view_function = mock_function_view
 
     def test_assert_response_when_function_view_used(self):
-        request = self.factory.create_request(self.factory.Method.GET)
+        request = self.factory.get()
 
         response = self.view(request)
 

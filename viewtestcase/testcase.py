@@ -5,32 +5,23 @@ from django import test as django_test
 
 class RequestFactory(django_test.RequestFactory):
 
-    class Method:
-        ALL = GET, POST, HEAD, DELETE, OPTIONS, PUT = (
-            'get',
-            'post',
-            'head',
-            'delete',
-            'options',
-            'put',
-        )
-
     def __init__(self, middleware_classes=None, **defaults):
         super(RequestFactory, self).__init__(**defaults)
         self.middleware_classes = middleware_classes or []
-        self._initialize_shortcuts()
+        self._override_shortcuts()
 
-    def create_request(self, method, data=None, user=None, path='',
-                       middleware_classes=None):
-        request = getattr(self, method.lower())(path, data or {})
+    def _override_shortcuts(self):
+        for method in ('get', 'post', 'head', 'delete', 'options', 'put'):
+            shortcut = partial(self._request, method)
+            setattr(self, method, shortcut)
+
+    def _request(self, method, user=None, path='',
+                 middleware_classes=None, **kwargs):
+        super_method = getattr(super(RequestFactory, self), method.lower())
+        request = super_method(path=path, **kwargs)
         request.user = user
         self._process_middleware_classes(middleware_classes or [], request)
         return request
-
-    def _initialize_shortcuts(self):
-        for method in self.Method.ALL:
-            shortcut = partial(self.create_request, method)
-            setattr(self, 'create_{0}_request'.format(method), shortcut)
 
     def _process_middleware_classes(self, middleware_classes, request):
         for mw_class in self.middleware_classes + middleware_classes:
@@ -41,6 +32,7 @@ class RequestFactory(django_test.RequestFactory):
 
 class ViewTestCase(django_test.TestCase):
     view_class = None
+    view_function = None
     factory_class = RequestFactory
     middleware_classes = None
     redirect_codes = [
@@ -52,6 +44,8 @@ class ViewTestCase(django_test.TestCase):
         super(ViewTestCase, self)._pre_setup(*args, **kwargs)
         if self.view_class:
             self.view = self.view_class.as_view()
+        elif self.view_function:
+            self.view = self.__class__.__dict__['view_function']
         if self.factory_class:
             self.factory = self.factory_class(self.middleware_classes)
 
