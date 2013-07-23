@@ -1,5 +1,4 @@
 from functools import partial
-from django.http import HttpResponseRedirect, HttpResponsePermanentRedirect
 from django import test as django_test
 
 
@@ -36,10 +35,6 @@ class ViewTestCase(django_test.TestCase):
     view_kwargs = None
     factory_class = RequestFactory
     middleware_classes = None
-    redirect_codes = [
-        HttpResponseRedirect.status_code,
-        HttpResponsePermanentRedirect.status_code
-    ]
 
     def _pre_setup(self, *args, **kwargs):
         super(ViewTestCase, self)._pre_setup(*args, **kwargs)
@@ -58,14 +53,3 @@ class ViewTestCase(django_test.TestCase):
 
     def create_view_object(self):
         return self.view_class(**self.get_view_kwargs())
-
-    def assert_redirect(self, response, expected_url=None):
-        self.assertIn(response.status_code, self.redirect_codes)
-        if expected_url:
-            self.assertEqual(
-                response._headers.get('location', None),
-                ('Location', str(expected_url)),
-            )
-
-    def assert_not_redirect(self, response):
-        self.assertNotIn(response.status_code, self.redirect_codes)

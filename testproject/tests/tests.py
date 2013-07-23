@@ -65,6 +65,17 @@ class ViewTestCaseTest(viewtestcase.ViewTestCase):
         self.assertIsInstance(self.factory, viewtestcase.RequestFactory)
         self.assertIn(MockMiddleware, self.factory.middleware_classes)
 
+    def test_creating_view_object(self):
+        view_object = self.view_class()
+
+        view_object.mock_method()
+
+        self.assertTrue(view_object.mock_method_called)
+
+
+class RedirectAssertionsMixinTest(viewtestcase.RedirectsAssertionsMixin, viewtestcase.ViewTestCase):
+    view_class = MockView
+
     def test_assert_not_redirect_should_pass_when_view_not_redirect(self):
         request = self.factory.get()
 
@@ -79,13 +90,6 @@ class ViewTestCaseTest(viewtestcase.ViewTestCase):
         response = view(request)
 
         self.assert_redirect(response)
-
-    def test_creating_view_object(self):
-        view_object = self.view_class()
-
-        view_object.mock_method()
-
-        self.assertTrue(view_object.mock_method_called)
 
 
 class KwargsViewTestCaseTest(viewtestcase.ViewTestCase):

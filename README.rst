@@ -25,7 +25,8 @@ which we would like to present as an alternative to the DjangoCon approach.
 **django-viewtestcase** makes performing unit tests for your views easier.
 Instead of ``self.client`` you will use ``self.factory`` which is an extended RequestFactory
 with with overridden shortcuts for creating requests (eg. ``path`` is not required parameter).
-There are also some additional assertions like ``assert_redirect`` in ``ViewTestCase``.
+
+There are also some additional useful assertions in different mixins in ``assertions`` module.
 
 Sometimes you would need middlewares to be applied in order to test the view. there is an option that helps
 specify which middlewares should be used in a single test or a whole test case by applying
@@ -46,7 +47,7 @@ Examples
     from yourapp.views import YourView
     from yourapp.factories import UserFactory
 
-    class YourViewTest(viewtestcase.ViewTestCase):
+    class YourViewTest(viewtestcase.RedirectsAssertionsMixin, viewtestcase.ViewTestCase):
         view_class = YourView
         view_kwargs = {'some_kwarg': 'value'}
         middleware_classes = [
