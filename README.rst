@@ -68,7 +68,7 @@ If you want to test function-based view you should do it like this:
 .. code:: python
 
     class YourFunctionViewTest(viewtestcase.ViewTestCase):
-        view_function = tested_view_function
+        view_function = your_view
 
 There is no special method for testing single view methods, because it
 is really easy to do something like:
