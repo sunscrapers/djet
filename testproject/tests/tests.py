@@ -43,6 +43,13 @@ class MockView(generic.View):
         self.mock_method_called = True
 
 
+class KwargsMockView(generic.View):
+    test = None
+
+    def get(self, *args, **kwargs):
+        return self.test
+
+
 def mock_function_view(request):
     return HttpResponse(status=200)
 
@@ -79,6 +86,23 @@ class ViewTestCaseTest(viewtestcase.ViewTestCase):
         view_object.mock_method()
 
         self.assertTrue(view_object.mock_method_called)
+
+
+class KwargsViewTestCaseTest(viewtestcase.ViewTestCase):
+    view_class = KwargsMockView
+    view_kwargs = {'test': 'test'}
+
+    def test_view_should_have_kwargs_when_view_kwargs_specified(self):
+        request = self.factory.get()
+
+        response = self.view(request)
+
+        self.assertEqual(response, 'test')
+
+    def test_view_object_should_have_kwargs_when_view_kwargs_specified(self):
+        view_object = self.create_view_object()
+
+        self.assertEqual(view_object.test, 'test')
 
 
 class ViewTestCaseFunctionViewTest(viewtestcase.ViewTestCase):

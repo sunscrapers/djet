@@ -33,6 +33,7 @@ class RequestFactory(django_test.RequestFactory):
 class ViewTestCase(django_test.TestCase):
     view_class = None
     view_function = None
+    view_kwargs = None
     factory_class = RequestFactory
     middleware_classes = None
     redirect_codes = [
@@ -43,11 +44,20 @@ class ViewTestCase(django_test.TestCase):
     def _pre_setup(self, *args, **kwargs):
         super(ViewTestCase, self)._pre_setup(*args, **kwargs)
         if self.view_class:
-            self.view = self.view_class.as_view()
+            self.view = self.view_class.as_view(**self.get_view_kwargs())
         elif self.view_function:
             self.view = self.__class__.__dict__['view_function']
         if self.factory_class:
-            self.factory = self.factory_class(self.middleware_classes)
+            self.factory = self.factory_class(self.get_middleware_classes())
+
+    def get_view_kwargs(self):
+        return self.view_kwargs or {}
+
+    def get_middleware_classes(self):
+        return self.middleware_classes or []
+
+    def create_view_object(self):
+        return self.view_class(**self.get_view_kwargs())
 
     def assert_redirect(self, response, expected_url=None):
         self.assertIn(response.status_code, self.redirect_codes)
