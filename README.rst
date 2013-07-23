@@ -15,25 +15,23 @@ To install **django-viewtestcase** use PyPI:
 Why django-viewtestcase?
 ========================
 
-Django test client in fact performs integration tests. All middlewares,
-resolvers, decorators and so on are in fact tested. Just single failure
-in middleware can break all view tests.
+Django test client performs integration tests. All middlewares, resolvers, decorators and so on are tested.
+Just a single failure in a middleware can break all the view tests.
 
-`One
-technique <http://tech.novapost.fr/static/images/slides/djangocon-europe-2013-unit-test-class-based-views.html>`__
-was presented at DjangoCon Europe 2013 Warsaw. Our approach used for a
-long time was somehow different so we wanted to share it as an
-alternative.
+`One technique <http://tech.novapost.fr/static/images/slides/djangocon-europe-2013-unit-test-class-based-views.html>`__
+of performing the tests was presented at DjangoCon Europe 2013 Warsaw. We have always used a slightly different method,
+which we would like to present as an alternative to the DjangoCon approach.
 
-**django-viewtestcase** makes it easier to make better unit tests for
-your views. Instead of ``self.client`` you will use ``self.factory``
-which is an extended ``RequestFactory`` with overridden shortcuts for
-creating requests (eg. ``path`` is not required parameter). There are
-also some additional assertions like ``assert_redirect`` in ViewTestCase.
+**django-viewtestcase** makes performing unit tests for your views easier.
+Instead of ``self.client`` you will use ``self.factory`` which is an extended RequestFactory
+with with overridden shortcuts for creating requests (eg. ``path`` is not required parameter).
+There are also some additional assertions like ``assert_redirect`` in ``ViewTestCase``.
 
-Sometimes middlewares are required for view to test it, so there is an
-option to specify which middlewares should be used in a single test or
-whole test case by giving ``middleware_classes`` argument.
+Sometimes you would need middlewares to be applied in order to test the view. there is an option that helps
+specify which middlewares should be used in a single test or a whole test case by applying
+``middleware_classes`` argument.
+
+Developed by SUNSCRAPERS with passion & patience.
 
 Examples
 ========
