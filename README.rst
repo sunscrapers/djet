@@ -31,7 +31,7 @@ Sometimes you would need middlewares to be applied in order to test the view. th
 specify which middlewares should be used in a single test or a whole test case by applying
 ``middleware_classes`` argument.
 
-Developed by SUNSCRAPERS with passion & patience.
+Developed by `SUNSCRAPERS <http://sunscrapers.com>`__ with passion & patience.
 
 Examples
 ========
