@@ -44,16 +44,18 @@ Examples
     from django.contrib.messages.middleware import MessageMiddleware
     from django.contrib.sessions.middleware import SessionMiddleware
     from yourapp.views import YourView
+    from yourapp.factories import UserFactory
 
     class YourViewTest(viewtestcase.ViewTestCase):
         view_class = YourView
+        view_kwargs = {'some_kwarg': 'value'}
         middleware_classes = [
             SessionMiddleware,
             MessageMiddleware,
         ]
 
         def test_post_should_redirect_and_add_message_when_next_parameter(self):
-            request = self.factory.post(data={'next': '/'})
+            request = self.factory.post(data={'next': '/'}, user=UserFactory())
 
             response = self.view(request)
 
@@ -70,21 +72,22 @@ If you want to test function-based view you should do it like this:
     class YourFunctionViewTest(viewtestcase.ViewTestCase):
         view_function = your_view
 
-There is no special method for testing single view methods, because it
-is really easy to do something like:
+There is special ``create_view_object`` helper for testing single view methods, which applies
+the view_kwargs specified to created view object.
+You can always create view object with different kwargs by using ``self.view_class`` constructor.
 
 .. code:: python
 
     class YourViewObjectMethodTest(viewtestcase.ViewTestCase):
         view_class = YourView
+        view_kwargs = {'redirect_url': '/'}
 
-        def test_test_some_view_method(self):
-            view_object = self.view_class()
+        def test_some_view_method(self):
+            view_object = self.create_view_object()
 
             view_object.some_method()
 
             self.assertTrue(view_object.some_method_called)
-
 
 
 .. |Build Status| image:: https://travis-ci.org/sunscrapers/django-viewtestcase.png
