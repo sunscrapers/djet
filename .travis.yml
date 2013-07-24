@@ -8,5 +8,6 @@ env:
   - DJANGO_VERSION=1.5.1
 install:
   - pip install -q Django==$DJANGO_VERSION
+  - pip install -q Pillow
   - python setup.py -q install
 script: testproject/manage.py test

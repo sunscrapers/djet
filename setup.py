@@ -1,5 +1,9 @@
 from setuptools import setup
 
+requires = [
+    'Django>=1.3'
+]
+
 setup(
     name='djet',
     version='0.0.2',
@@ -8,5 +12,6 @@ setup(
     author='SUNSCRAPERS',
     author_email='info@sunscrapers.com',
     packages=['djet'],
-    url='https://github.com/sunscrapers/djet'
+    url='https://github.com/sunscrapers/djet',
+    install_requires=requires,
 )
