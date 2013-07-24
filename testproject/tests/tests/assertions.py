@@ -8,9 +8,11 @@ from djet import assertions, testcases
 
 
 class MockView(generic.View):
-    pass
 
-class RedirectAssertionsMixinTest(assertions.RedirectsAssertionsMixin, testcases.ViewTestCase):
+    def get(self, *args, **kwargs):
+        return HttpResponse()
+
+class StatusCodeAssertionsMixinTest(assertions.StatusCodeAssertionsMixin, testcases.ViewTestCase):
     view_class = MockView
 
     def test_assert_not_redirect_should_pass_when_view_not_redirect(self):
@@ -27,6 +29,24 @@ class RedirectAssertionsMixinTest(assertions.RedirectsAssertionsMixin, testcases
         response = view(request)
 
         self.assert_redirect(response)
+
+    def test_assert_status_code_should_pass_when_code_is_200(self):
+        request = self.factory.get()
+
+        response = self.view(request)
+
+        self.assert_status_equal(response, 200)
+        self.assert_status_in(response, [200, 201, 202])
+
+    def test_assert_status_code_should_raise_assertion_error_when_code_is_not_200(self):
+        request = self.factory.get()
+
+        response = self.view(request)
+
+        with self.assertRaises(AssertionError):
+            self.assert_status_equal(response, 400)
+        with self.assertRaises(AssertionError):
+            self.assert_status_in(response, [401, 404])
 
 
 class EmailMockView(generic.View):
