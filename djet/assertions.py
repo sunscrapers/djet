@@ -1,3 +1,5 @@
+from django.contrib import messages
+from django.contrib.messages.storage.base import Message
 from django.core import mail
 from django.http import HttpResponseRedirect, HttpResponsePermanentRedirect
 
@@ -41,3 +43,16 @@ class EmailAssertionsMixin(object):
             if self._is_email_matching_criteria(email, **kwargs):
                 return
         raise AssertionError('Email matching criteria was not sent')
+
+
+class MessagesAssertionsMixin(object):
+
+    def assert_messages_sent(self, request, count):
+        sent = len(messages.get_messages(request))
+        self.assertEqual(sent, count, 'There was {0} messages sent, expected {1}.'.format(sent, count))
+
+    def assert_message_exists(self, request, level, message):
+        self.assertIn(
+                Message(level=level, message=message),
+                messages.get_messages(request),
+            )

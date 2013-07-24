@@ -1,7 +1,7 @@
 djet
 ===================
 
-Extended TestCase for easy unit testing of Django views.
+Django Extended Tests is set of helpers for easy unit testing of Django views.
 
 |Build Status|
 
@@ -39,15 +39,16 @@ Examples
 
 .. code:: python
 
-    import djet
+    from djet import assertions, testcases
     from django.contrib import messages
-    from django.contrib.messages.storage.base import Message
     from django.contrib.messages.middleware import MessageMiddleware
     from django.contrib.sessions.middleware import SessionMiddleware
     from yourapp.views import YourView
     from yourapp.factories import UserFactory
 
-    class YourViewTest(djet.RedirectsAssertionsMixin, djet.ViewTestCase):
+    class YourViewTest(assertions.RedirectsAssertionsMixin,
+                       assertions.MessagesAssertionsMixin,
+                       testcases.ViewTestCase):
         view_class = YourView
         view_kwargs = {'some_kwarg': 'value'}
         middleware_classes = [
@@ -61,16 +62,13 @@ Examples
             response = self.view(request)
 
             self.assert_redirect(response, '/')
-            self.assertIn(
-                Message(level=messages.SUCCESS, message='Success!'),
-                messages.get_messages(request),
-            )
+            self.assert_message_exists(request, messages.SUCCESS, 'Success!')
 
 If you want to test function-based view you should do it like this:
 
 .. code:: python
 
-    class YourFunctionViewTest(djet.ViewTestCase):
+    class YourFunctionViewTest(testcases.ViewTestCase):
         view_function = your_view
 
 There is special ``create_view_object`` helper for testing single view methods, which applies
@@ -79,7 +77,7 @@ You can always create view object with different kwargs by using ``self.view_cla
 
 .. code:: python
 
-    class YourViewObjectMethodTest(djet.ViewTestCase):
+    class YourViewObjectMethodTest(testcases.ViewTestCase):
         view_class = YourView
         view_kwargs = {'redirect_url': '/'}
 
