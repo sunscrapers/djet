@@ -1,4 +1,4 @@
-django-viewtestcase
+djet
 ===================
 
 Extended TestCase for easy unit testing of Django views.
@@ -8,11 +8,11 @@ Extended TestCase for easy unit testing of Django views.
 Installation
 ============
 
-To install **django-viewtestcase** use PyPI:
+To install **djet** use PyPI:
 
-``$ pip install django-viewtestcase``
+``$ pip install djet``
 
-Why django-viewtestcase?
+Why djet?
 ========================
 
 Django test client performs integration tests. All middlewares, resolvers, decorators and so on are tested.
@@ -22,7 +22,7 @@ Just a single failure in a middleware can break all the view tests.
 of performing the tests was presented at DjangoCon Europe 2013 Warsaw. We have always used a slightly different method,
 which we would like to present as an alternative to the DjangoCon approach.
 
-**django-viewtestcase** makes performing unit tests for your views easier.
+**djet** makes performing unit tests for your views easier.
 Instead of ``self.client`` you will use ``self.factory`` which is an extended RequestFactory
 with with overridden shortcuts for creating requests (eg. ``path`` is not required parameter).
 
@@ -39,7 +39,7 @@ Examples
 
 .. code:: python
 
-    import viewtestcase
+    import djet
     from django.contrib import messages
     from django.contrib.messages.storage.base import Message
     from django.contrib.messages.middleware import MessageMiddleware
@@ -47,7 +47,7 @@ Examples
     from yourapp.views import YourView
     from yourapp.factories import UserFactory
 
-    class YourViewTest(viewtestcase.RedirectsAssertionsMixin, viewtestcase.ViewTestCase):
+    class YourViewTest(djet.RedirectsAssertionsMixin, djet.ViewTestCase):
         view_class = YourView
         view_kwargs = {'some_kwarg': 'value'}
         middleware_classes = [
@@ -70,7 +70,7 @@ If you want to test function-based view you should do it like this:
 
 .. code:: python
 
-    class YourFunctionViewTest(viewtestcase.ViewTestCase):
+    class YourFunctionViewTest(djet.ViewTestCase):
         view_function = your_view
 
 There is special ``create_view_object`` helper for testing single view methods, which applies
@@ -79,7 +79,7 @@ You can always create view object with different kwargs by using ``self.view_cla
 
 .. code:: python
 
-    class YourViewObjectMethodTest(viewtestcase.ViewTestCase):
+    class YourViewObjectMethodTest(djet.ViewTestCase):
         view_class = YourView
         view_kwargs = {'redirect_url': '/'}
 
@@ -91,5 +91,5 @@ You can always create view object with different kwargs by using ``self.view_cla
             self.assertTrue(view_object.some_method_called)
 
 
-.. |Build Status| image:: https://travis-ci.org/sunscrapers/django-viewtestcase.png
-   :target: https://travis-ci.org/sunscrapers/django-viewtestcase
+.. |Build Status| image:: https://travis-ci.org/sunscrapers/djet.png
+   :target: https://travis-ci.org/sunscrapers/djet

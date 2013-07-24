@@ -1,11 +1,10 @@
 import types
 from django.core import mail
-from django.core.exceptions import ValidationError
 from django.core.handlers.wsgi import WSGIRequest
 from django import test as django_test
 from django.http import HttpResponse
 from django.views import generic
-import viewtestcase
+import djet
 
 
 class MockMiddleware(object):
@@ -17,7 +16,7 @@ class MockMiddleware(object):
 class RequestFactoryTest(django_test.TestCase):
 
     def setUp(self):
-        self.factory = viewtestcase.RequestFactory()
+        self.factory = djet.RequestFactory()
 
     def test_create_request_should_return_request(self):
         request = self.factory.get()
@@ -56,7 +55,7 @@ def mock_function_view(request):
     return HttpResponse(status=200)
 
 
-class ViewTestCaseTest(viewtestcase.ViewTestCase):
+class ViewTestCaseTest(djet.ViewTestCase):
     view_class = MockView
     middleware_classes = [MockMiddleware]
 
@@ -64,7 +63,7 @@ class ViewTestCaseTest(viewtestcase.ViewTestCase):
         self.assertIsInstance(self.view, types.FunctionType)
 
     def test_init_should_create_factory_instance_with_middleware_classes(self):
-        self.assertIsInstance(self.factory, viewtestcase.RequestFactory)
+        self.assertIsInstance(self.factory, djet.RequestFactory)
         self.assertIn(MockMiddleware, self.factory.middleware_classes)
 
     def test_creating_view_object(self):
@@ -75,7 +74,7 @@ class ViewTestCaseTest(viewtestcase.ViewTestCase):
         self.assertTrue(view_object.mock_method_called)
 
 
-class KwargsViewTestCaseTest(viewtestcase.ViewTestCase):
+class KwargsViewTestCaseTest(djet.ViewTestCase):
     view_class = KwargsMockView
     view_kwargs = {'test': 'test'}
 
@@ -92,7 +91,7 @@ class KwargsViewTestCaseTest(viewtestcase.ViewTestCase):
         self.assertEqual(view_object.test, 'test')
 
 
-class ViewTestCaseFunctionViewTest(viewtestcase.ViewTestCase):
+class ViewTestCaseFunctionViewTest(djet.ViewTestCase):
     view_function = mock_function_view
 
     def test_assert_response_when_function_view_used(self):
@@ -103,7 +102,7 @@ class ViewTestCaseFunctionViewTest(viewtestcase.ViewTestCase):
         self.assertEqual(response.status_code, 200)
 
 
-class RedirectAssertionsMixinTest(viewtestcase.RedirectsAssertionsMixin, viewtestcase.ViewTestCase):
+class RedirectAssertionsMixinTest(djet.RedirectsAssertionsMixin, djet.ViewTestCase):
     view_class = MockView
 
     def test_assert_not_redirect_should_pass_when_view_not_redirect(self):
@@ -130,7 +129,7 @@ class EmailMockView(generic.View):
         return HttpResponse()
 
 
-class EmailAssertionsMixinTest(viewtestcase.EmailAssertionsMixin, viewtestcase.ViewTestCase):
+class EmailAssertionsMixinTest(djet.EmailAssertionsMixin, djet.ViewTestCase):
     view_class = EmailMockView
 
     def test_assert_no_email_sent_when_not_sent(self):
