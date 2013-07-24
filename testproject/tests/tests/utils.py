@@ -1,6 +1,6 @@
 from django.test import TestCase
 from djet import utils
-from testproject.tests import models
+from .. import models
 
 
 class RefreshTest(TestCase):
