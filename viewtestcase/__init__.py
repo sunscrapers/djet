@@ -1,2 +1,2 @@
 from .testcase import ViewTestCase, RequestFactory
-from .assertions import RedirectsAssertionsMixin
+from .assertions import RedirectsAssertionsMixin, EmailAssertionsMixin

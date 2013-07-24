@@ -1,4 +1,6 @@
 import types
+from django.core import mail
+from django.core.exceptions import ValidationError
 from django.core.handlers.wsgi import WSGIRequest
 from django import test as django_test
 from django.http import HttpResponse
@@ -73,25 +75,6 @@ class ViewTestCaseTest(viewtestcase.ViewTestCase):
         self.assertTrue(view_object.mock_method_called)
 
 
-class RedirectAssertionsMixinTest(viewtestcase.RedirectsAssertionsMixin, viewtestcase.ViewTestCase):
-    view_class = MockView
-
-    def test_assert_not_redirect_should_pass_when_view_not_redirect(self):
-        request = self.factory.get()
-
-        response = self.view(request)
-
-        self.assert_not_redirect(response)
-
-    def test_assert_redirect_should_pass_when_view_redirect(self):
-        view = generic.RedirectView.as_view(url='/')
-        request = self.factory.get()
-
-        response = view(request)
-
-        self.assert_redirect(response)
-
-
 class KwargsViewTestCaseTest(viewtestcase.ViewTestCase):
     view_class = KwargsMockView
     view_kwargs = {'test': 'test'}
@@ -118,3 +101,63 @@ class ViewTestCaseFunctionViewTest(viewtestcase.ViewTestCase):
         response = self.view(request)
 
         self.assertEqual(response.status_code, 200)
+
+
+class RedirectAssertionsMixinTest(viewtestcase.RedirectsAssertionsMixin, viewtestcase.ViewTestCase):
+    view_class = MockView
+
+    def test_assert_not_redirect_should_pass_when_view_not_redirect(self):
+        request = self.factory.get()
+
+        response = self.view(request)
+
+        self.assert_not_redirect(response)
+
+    def test_assert_redirect_should_pass_when_view_redirect(self):
+        view = generic.RedirectView.as_view(url='/')
+        request = self.factory.get()
+
+        response = view(request)
+
+        self.assert_redirect(response)
+
+
+class EmailMockView(generic.View):
+
+    def get(self, *args, **kwargs):
+        for _ in range(int(self.request.GET.get('send'))):
+            mail.send_mail('test', 'tasty test', 'glados@aperture.edu', ['you@testingchamber.com'])
+        return HttpResponse()
+
+
+class EmailAssertionsMixinTest(viewtestcase.EmailAssertionsMixin, viewtestcase.ViewTestCase):
+    view_class = EmailMockView
+
+    def test_assert_no_email_sent_when_not_sent(self):
+        request = self.factory.get(data={'send': '0'})
+
+        self.view(request)
+
+        self.assert_emails_in_mailbox(0)
+
+    def test_assert_email_sent_when_really_sent(self):
+        request = self.factory.get(data={'send': '3'})
+
+        self.view(request)
+
+        self.assert_emails_in_mailbox(3)
+
+    def test_assert_email_exists_raising_errors_when_should_raise(self):
+        request = self.factory.get(data={'send': '1'})
+
+        self.view(request)
+
+        with self.assertRaises(AssertionError):
+            self.assert_email_exists(subject='toast')
+
+    def test_assert_email_exists_passing(self):
+        request = self.factory.get(data={'send': '1'})
+
+        self.view(request)
+
+        self.assert_email_exists(subject='test')
