@@ -54,7 +54,7 @@ you must also add ``middleware_classes`` required by messages to your test case.
 We do not add them for you in mixin, because we believe those mixins shouldn't
 mess with middlewares, as they are required by your view in fact.
 
-Helpers for testing file uploads
+Helpers for testing files uploads
 ---------------------------------
 
 There are three main annoying things while testing files related things in Django

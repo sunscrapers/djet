@@ -31,7 +31,7 @@ class InMemoryStorageMixin(object):
 
     def _pre_setup(self):
         override = UserSettingsHolder(settings._wrapped)
-        override.DEFAULT_FILE_STORAGE = self.storage
+        setattr(override, 'DEFAULT_FILE_STORAGE', self.storage)
         settings._wrapped = override
         super(InMemoryStorageMixin, self)._pre_setup()
 
