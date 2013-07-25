@@ -25,6 +25,14 @@ class InMemoryStorageTestCase(files.InMemoryStorageMixin, TestCase):
         self.file = files.create_inmemory_file(self.file_name, 'Avada Kedavra')
         default_storage.save(self.file_name, self.file)
 
+    def test_aaa_just_saving_file(self):
+        default_storage.save('cross.txt', files.create_inmemory_file('aa.txt'))
+
+        self.assertTrue(default_storage.exists('cross.txt'))
+
+    def test_bbb_saved_file_should_not_exist_in_another_test(self):
+        self.assertFalse(default_storage.exists('cross.txt'))
+
     def test_file_should_not_be_saved_on_disk_when_saved(self):
         self.assertFalse(os.path.exists(self.file_name))
 

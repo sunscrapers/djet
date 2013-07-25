@@ -72,7 +72,8 @@ during tests and speed ups tests by keeping them in memory.
 ``InMemoryStorageMixin`` does another great thing.
 It replaces ``DEFAULT_FILE_STORAGE`` with ``InMemoryStorage`` for you and also
 removes all files after test ``tearDown``, so you will no longer see any files
-crossing between tests.
+crossing between tests. You can also give here any storage you want,
+it only should implement ``clear`` method which is invoked.
 
 Examples
 ========

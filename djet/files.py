@@ -5,7 +5,9 @@ from django.core.files.uploadedfile import InMemoryUploadedFile
 
 
 class InMemoryStorage(Storage):
-    files = {}
+
+    def __init__(self):
+        self.files = {}
 
     def _open(self, name, mode):
         return self.files[name]
@@ -24,17 +26,17 @@ class InMemoryStorage(Storage):
 class InMemoryStorageMixin(object):
     storage = InMemoryStorage
 
-    def __init__(self, *args, **kwargs):
-        self._wrapped_storage = default_storage._wrapped
-        super(InMemoryStorageMixin, self).__init__(*args, **kwargs)
-
     def _pre_setup(self):
+        self._wrapped_storage = default_storage._wrapped
         default_storage._wrapped = self.storage()
         super(InMemoryStorageMixin, self)._pre_setup()
 
     def _post_teardown(self):
         super(InMemoryStorageMixin, self)._post_teardown()
-        default_storage.clear()
+        try:
+            default_storage.clear()
+        except AttributeError:
+            pass
         default_storage._wrapped = self._wrapped_storage
 
 
