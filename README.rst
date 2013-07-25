@@ -62,8 +62,8 @@ and **djet** helps with all of them.
 
 First thing - you will not need any files put somewhere next to fixtures anymore.
 ``create_inmemory_file`` and ``create_inmemory_image`` are ready to use.
-Those helpful functions are taken from `great blog post by Piotr Maliński
-<http://www.rkblog.rk.edu.pl/w/p/temporary-files-django-tests-and-fly-file-manipulation/`__
+Those helpful functions are taken from
+`great blog post by Piotr Maliński <http://www.rkblog.rk.edu.pl/w/p/temporary-files-django-tests-and-fly-file-manipulation/`__
 with just a few small changes.
 
 You can also use ``InMemoryStorage`` which deals with files being saved to disk
