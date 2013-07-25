@@ -31,7 +31,7 @@ of performing the tests was presented at DjangoCon Europe 2013 Warsaw.
 We have always used a slightly different method, which we would like to present
 as an alternative to the DjangoCon approach.
 
-**djet** makes performing unit tests for your views easier.
+**djet** makes performing unit tests for your views easier by providing ``ViewTestCase``.
 Instead of ``self.client`` you will use ``self.factory`` which is an
 extended RequestFactory with with overridden shortcuts for creating requests
 (eg. ``path`` is not required parameter).
@@ -44,7 +44,7 @@ Additional assertions
 ---------------------
 
 There are also some additional useful assertions in different mixins in
-``assertions`` module.
+``djet.assertions`` module.
 
 Currently there are ``StatusCodeAssertionsMixin``, ``EmailAssertionsMixin``
 and ``MessagesAssertionsMixin`` full of useful assertions.
@@ -58,12 +58,12 @@ Helpers for testing files uploads
 ---------------------------------
 
 There are three main annoying things while testing files related things in Django
-and **djet** helps with all of them.
+and ``djet.files`` module helps with all of them
 
 First thing - you will not need any files put somewhere next to fixtures anymore.
 ``create_inmemory_file`` and ``create_inmemory_image`` are ready to use.
 Those helpful functions are taken from
-`great blog post by Piotr Maliński <http://www.rkblog.rk.edu.pl/w/p/temporary-files-django-tests-and-fly-file-manipulation/`__
+`great blog post by Piotr Maliński <http://www.rkblog.rk.edu.pl/w/p/temporary-files-django-tests-and-fly-file-manipulation/>`__
 with just a few small changes.
 
 You can also use ``InMemoryStorage`` which deals with files being saved to disk
@@ -73,10 +73,20 @@ during tests and speed ups tests by keeping them in memory.
 It replaces ``DEFAULT_FILE_STORAGE`` with ``InMemoryStorage`` for you and also
 removes all files after test ``tearDown``, so you will no longer see any files
 crossing between tests. You can also give here any storage you want,
-it only should implement ``clear`` method which is invoked.
+it only should implement ``clear`` method which is invoked after tearDown.
+``InMemoryStorageMixin`` cannot be used with bare ``unittest.TestCase``,
+you have to use ``TestCase`` from Django or ``ViewTestCase`` from **djet**.
+
+Other utils
+-----------
+
+``utils.refresh`` helps you get newer version of object from database
+in a very simple way.
 
 Examples
 ========
+
+We encourage you to import whole djet modules, not classes.
 
 .. code:: python
 
@@ -145,6 +155,24 @@ An example of test using all files goodies from **djet**:
         default_storage.save('file.txt', created_file)
 
         self.assertTrue(default_storage.exists('file.txt))
+
+
+Utils example:
+
+.. code:: python
+
+    from djet import utils, testcases
+    from yourapp.models import Flower
+    from yourapp.views import ChangeFlowerView
+
+    class ChangeFlowerViewTest(testcases.ViewTestCase):
+        flower = Flower.objects.create(color='orange')
+        request = self.factory.post(data={'color': 'blue'})
+
+        self.view(request)
+
+        changed_flower = utils.refresh(flower)
+        self.assertEqual('blue', changed_flower.color)
 
 
 .. |Build Status| image:: https://travis-ci.org/sunscrapers/djet.png

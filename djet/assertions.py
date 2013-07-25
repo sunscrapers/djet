@@ -36,6 +36,10 @@ class StatusCodeAssertionsMixin(object):
         )
 
     def assert_redirect(self, response, expected_url=None):
+        """
+        assertRedirects from Django TestCase follows the redirects chains,
+        this assertion does not - which is more like real unit testing
+        """
         self.assertIn(
             response.status_code,
             self.redirect_codes,
