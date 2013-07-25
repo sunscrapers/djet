@@ -54,6 +54,26 @@ you must also add ``middleware_classes`` required by messages to your test case.
 We do not add them for you in mixin, because we believe those mixins shouldn't
 mess with middlewares, as they are required by your view in fact.
 
+Helpers for testing file uploads
+---------------------------------
+
+There are three main annoying things while testing files related things in Django
+and **djet** helps with all of them.
+
+First thing - you will not need any files put somewhere next to fixtures anymore.
+``create_inmemory_file`` and ``create_inmemory_image`` are ready to use.
+Those helpful functions are taken from `great blog post by Piotr Maliński
+<http://www.rkblog.rk.edu.pl/w/p/temporary-files-django-tests-and-fly-file-manipulation/`__
+with just a few small changes.
+
+You can also use ``InMemoryStorage`` which deals with files being saved to disk
+during tests and speed ups tests by keeping them in memory.
+
+``InMemoryStorageMixin`` does another great thing.
+It replaces ``DEFAULT_FILE_STORAGE`` with ``InMemoryStorage`` for you and also
+removes all files after test ``tearDown``, so you will no longer see any files
+crossing between tests.
+
 Examples
 ========
 
@@ -108,6 +128,22 @@ You can always create view object with different kwargs by using
             view_object.some_method()
 
             self.assertTrue(view_object.some_method_called)
+
+
+An example of test using all files goodies from **djet**:
+
+.. code:: python
+
+    from djet import files
+    from django.core.files.storage import default_storage
+    from django.test.testcases import TestCase
+
+    class YourFilesTests(files.InMemoryStorageMixin, TestCase):
+        created_file = files.create_inmemory_file('file.txt', 'Avada Kedavra')
+
+        default_storage.save('file.txt', created_file)
+
+        self.assertTrue(default_storage.exists('file.txt))
 
 
 .. |Build Status| image:: https://travis-ci.org/sunscrapers/djet.png

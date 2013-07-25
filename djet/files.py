@@ -1,6 +1,7 @@
 import StringIO
 import os
-from django.core.files.storage import Storage
+from django.conf import UserSettingsHolder, settings
+from django.core.files.storage import Storage, default_storage
 from django.core.files.uploadedfile import InMemoryUploadedFile
 
 
@@ -17,8 +18,30 @@ class InMemoryStorage(Storage):
     def exists(self, name):
         return name in self.files
 
+    def clear(self):
+        self.files = {}
 
-def make_inmemory_file(file_name='tmp.txt', content=None, content_type=None):
+
+class InMemoryStorageMixin(object):
+    storage = 'djet.files.InMemoryStorage'
+
+    def __init__(self, *args, **kwargs):
+        self.wrapped = settings._wrapped
+        super(InMemoryStorageMixin, self).__init__(*args, **kwargs)
+
+    def _pre_setup(self):
+        override = UserSettingsHolder(settings._wrapped)
+        override.DEFAULT_FILE_STORAGE = self.storage
+        settings._wrapped = override
+        super(InMemoryStorageMixin, self)._pre_setup()
+
+    def _post_teardown(self):
+        super(InMemoryStorageMixin, self)._post_teardown()
+        default_storage.clear()
+        settings._wrapped = self.wrapped
+
+
+def create_inmemory_file(file_name='tmp.txt', content=None, content_type=None):
     io = StringIO.StringIO()
     io.write(content)
     file = InMemoryUploadedFile(io, None, file_name, content_type, io.len, None)
@@ -26,7 +49,7 @@ def make_inmemory_file(file_name='tmp.txt', content=None, content_type=None):
     return file
 
 
-def make_inmemory_image(file_name='tmp.png', format=None, width=200, height=200):
+def create_inmemory_image(file_name='tmp.png', format=None, width=200, height=200):
     from PIL import Image
     if not format:
         _, extension = os.path.splitext(file_name)
