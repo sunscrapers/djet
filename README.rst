@@ -8,7 +8,7 @@ We have written those tools seperately while testing many Django applications an
 Developed by `SUNSCRAPERS <http://sunscrapers.com>`__ with passion & patience.
 
 We should warn you that before hitting 0.1.0 changes in **djet** may be rapid
-and we cannot guarantee backward-compatible.
+and we cannot guarantee backward-compatibility.
 
 |Build Status|
 
