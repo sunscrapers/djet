@@ -7,6 +7,9 @@ We have written those tools seperately while testing many Django applications an
 
 Developed by `SUNSCRAPERS <http://sunscrapers.com>`__ with passion & patience.
 
+We should warn you that before hitting 0.1.0 changes in **djet** may be rapid
+and we cannot guarantee backward-compatible.
+
 |Build Status|
 
 Installation
@@ -150,11 +153,13 @@ An example of test using all files goodies from **djet**:
     from django.test.testcases import TestCase
 
     class YourFilesTests(files.InMemoryStorageMixin, TestCase):
-        created_file = files.create_inmemory_file('file.txt', 'Avada Kedavra')
 
-        default_storage.save('file.txt', created_file)
+        def test_creating_file(self):
+            created_file = files.create_inmemory_file('file.txt', 'Avada Kedavra')
 
-        self.assertTrue(default_storage.exists('file.txt))
+            default_storage.save('file.txt', created_file)
+
+            self.assertTrue(default_storage.exists('file.txt))
 
 
 Utils example:
@@ -166,13 +171,19 @@ Utils example:
     from yourapp.views import ChangeFlowerView
 
     class ChangeFlowerViewTest(testcases.ViewTestCase):
-        flower = Flower.objects.create(color='orange')
-        request = self.factory.post(data={'color': 'blue'})
 
-        self.view(request)
+        def test_changing_flower_color(self):
+            flower = Flower.objects.create(color='orange')
+            post_data = {
+                'color': 'blue',
+                'id': flower.pk
+            }
+            request = self.factory.post(data=post_data)
 
-        changed_flower = utils.refresh(flower)
-        self.assertEqual('blue', changed_flower.color)
+            self.view(request)
+
+            changed_flower = utils.refresh(flower)
+            self.assertEqual('blue', changed_flower.color)
 
 
 .. |Build Status| image:: https://travis-ci.org/sunscrapers/djet.png
