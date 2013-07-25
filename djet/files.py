@@ -1,6 +1,6 @@
 import StringIO
 import os
-from django.conf import UserSettingsHolder, settings
+from django.conf import settings
 from django.core.files.storage import Storage, default_storage
 from django.core.files.uploadedfile import InMemoryUploadedFile
 
@@ -24,21 +24,20 @@ class InMemoryStorage(Storage):
 
 class InMemoryStorageMixin(object):
     storage = 'djet.files.InMemoryStorage'
+    setting_name = 'DEFAULT_FILE_STORAGE'
 
     def __init__(self, *args, **kwargs):
-        self.wrapped = settings._wrapped
+        self._default_file_storage = getattr(settings, self.setting_name)
         super(InMemoryStorageMixin, self).__init__(*args, **kwargs)
 
     def _pre_setup(self):
-        override = UserSettingsHolder(settings._wrapped)
-        setattr(override, 'DEFAULT_FILE_STORAGE', self.storage)
-        settings._wrapped = override
+        setattr(settings, self.setting_name, self.storage)
         super(InMemoryStorageMixin, self)._pre_setup()
 
     def _post_teardown(self):
         super(InMemoryStorageMixin, self)._post_teardown()
         default_storage.clear()
-        settings._wrapped = self.wrapped
+        setattr(settings, self.setting_name, self._default_file_storage)
 
 
 def create_inmemory_file(file_name='tmp.txt', content=None, content_type=None):
