@@ -1,7 +1,7 @@
 import os
-import unittest
 from django.core.files.storage import default_storage
 from django.test.testcases import TestCase
+from django.utils import unittest
 from djet import files
 try:
     import PIL
