@@ -12,6 +12,7 @@ class MockView(generic.View):
     def get(self, *args, **kwargs):
         return HttpResponse()
 
+
 class StatusCodeAssertionsMixinTest(assertions.StatusCodeAssertionsMixin, testcases.ViewTestCase):
     view_class = MockView
 
@@ -102,9 +103,9 @@ class MessagesMockView(generic.View):
 class MessagesAssertionsMixin(assertions.MessagesAssertionsMixin, testcases.ViewTestCase):
     view_class = MessagesMockView
     middleware_classes = [
-            SessionMiddleware,
-            MessageMiddleware,
-        ]
+        SessionMiddleware,
+        MessageMiddleware,
+    ]
 
     def test_assert_messages_sent_when_not_sent(self):
         request = self.factory.get(data={'send': '0'})

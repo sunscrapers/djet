@@ -12,4 +12,3 @@ class RefreshTest(TestCase):
 
         instance = utils.refresh(instance)
         self.assertEqual(instance.field, 'new')
-
