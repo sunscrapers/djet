@@ -10,7 +10,8 @@ class StatusCodeAssertionsMixin(object):
         HttpResponsePermanentRedirect.status_code
     ]
 
-    def assert_status_equal(self, response, status_code):
+    def assert_status_equal(self, response, status_code_or_response):
+        status_code = self._get_status_code(status_code_or_response)
         self.assertEqual(
             response.status_code,
             status_code,
@@ -20,7 +21,8 @@ class StatusCodeAssertionsMixin(object):
             )
         )
 
-    def assert_status_in(self, response, status_codes):
+    def assert_status_in(self, response, status_codes_or_responses):
+        status_codes = map(self._get_status_code, status_codes_or_responses)
         self.assertIn(
             response.status_code,
             status_codes,
@@ -62,6 +64,12 @@ class StatusCodeAssertionsMixin(object):
             self.redirect_codes,
             self._get_redirect_assertion_message(response)
         )
+
+    def _get_status_code(self, status_code_or_response):
+        try:
+            return status_code_or_response.status_code
+        except AttributeError:
+            return status_code_or_response
 
 
 class EmailAssertionsMixin(object):

@@ -39,6 +39,14 @@ class StatusCodeAssertionsMixinTest(assertions.StatusCodeAssertionsMixin, testca
         self.assert_status_equal(response, 200)
         self.assert_status_in(response, [200, 201, 202])
 
+    def test_assert_status_code_should_pass_when_responses_have_equal_codes(self):
+        request = self.factory.get()
+
+        response = self.view(request)
+
+        self.assert_status_equal(response, HttpResponse)
+        self.assert_status_in(response, [HttpResponse])
+
     def test_assert_status_code_should_raise_assertion_error_when_code_is_not_200(self):
         request = self.factory.get()
 
