@@ -29,10 +29,8 @@ class InMemoryStorage(Storage):
             if name.startswith(path):
                 without_path = name[len(path):]
                 try:
-                    slash_index = without_path.rindex('/')
-                    directory_name = without_path[:slash_index]
-                    if '/' not in directory_name:
-                        directories.add(directory_name)
+                    slash_index = without_path.index('/')
+                    directories.add(without_path[:slash_index])
                 except ValueError:
                     files.append(without_path)
         return list(directories), files

@@ -56,15 +56,20 @@ class InMemoryStorageTestCase(files.InMemoryStorageMixin, TestCase):
         self.assertFalse(default_storage.exists(self.file_name))
 
     def test_listdir_should_return_proper_paths(self):
-        for i in range(3):
-            file_name = '/a' * i + '/test.txt'
-            new_file = files.create_inmemory_file(file_name, 'Avada Kedavra')
-            default_storage.save(file_name, new_file)
+        file_name = '/a/b/test.txt'
+        new_file = files.create_inmemory_file(file_name, 'Avada Kedavra')
+        default_storage.save(file_name, new_file)
 
         dirs, files_list = default_storage.listdir('/')
+        sub_dirs, sub_files_list = default_storage.listdir('/a/')
+        sub_sub_dirs, sub_sub_files_list = default_storage.listdir('/a/b/')
 
         self.assertEqual(dirs, ['a'])
-        self.assertEqual(files_list, ['test.txt'])
+        self.assertFalse(files_list)
+        self.assertEqual(sub_dirs, ['b'])
+        self.assertFalse(sub_files_list)
+        self.assertFalse(sub_sub_dirs)
+        self.assertEqual(sub_sub_files_list, ['test.txt'])
 
     def test_size_should_return_file_size(self):
         size = default_storage.size(self.file_name)
