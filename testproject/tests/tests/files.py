@@ -49,3 +49,24 @@ class InMemoryStorageTestCase(files.InMemoryStorageMixin, TestCase):
         uploaded_file = default_storage.open(self.file_name)
 
         self.assertEqual(uploaded_file, self.file)
+
+    def test_file_should_be_deleted(self):
+        default_storage.delete(self.file_name)
+
+        self.assertFalse(default_storage.exists(self.file_name))
+
+    def test_listdir_should_return_proper_paths(self):
+        for i in range(3):
+            file_name = '/a' * i + '/test.txt'
+            new_file = files.create_inmemory_file(file_name, 'Avada Kedavra')
+            default_storage.save(file_name, new_file)
+
+        dirs, files_list = default_storage.listdir('/')
+
+        self.assertEqual(dirs, ['a'])
+        self.assertEqual(files_list, ['test.txt'])
+
+    def test_size_should_return_file_size(self):
+        size = default_storage.size(self.file_name)
+
+        self.assertEqual(size, len(self.file))

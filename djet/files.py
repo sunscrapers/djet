@@ -1,5 +1,6 @@
 import StringIO
 import os
+import datetime
 from django.core.files.storage import Storage, default_storage
 from django.core.files.uploadedfile import InMemoryUploadedFile
 
@@ -16,8 +17,42 @@ class InMemoryStorage(Storage):
         self.files[name] = content
         return name
 
+    def delete(self, name):
+        del self.files[name]
+
     def exists(self, name):
         return name in self.files
+
+    def listdir(self, path):
+        directories, files = set(), []
+        for name in self.files:
+            if name.startswith(path):
+                without_path = name[len(path):]
+                try:
+                    slash_index = without_path.rindex('/')
+                    directory_name = without_path[:slash_index]
+                    if '/' not in directory_name:
+                        directories.add(directory_name)
+                except ValueError:
+                    files.append(without_path)
+        return list(directories), files
+
+    def size(self, name):
+        file_instance = self.files[name]
+        file_instance.seek(0, 2)
+        return file_instance.tell()
+
+    def url(self, name):
+        return name
+
+    def accessed_time(self, name):
+        return datetime.datetime.now()
+
+    def created_time(self, name):
+        return datetime.datetime.now()
+
+    def modified_time(self, name):
+        return datetime.datetime.now()
 
     def clear(self):
         self.files = {}
