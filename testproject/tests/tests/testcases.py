@@ -69,6 +69,17 @@ class ViewTestCaseTest(testcases.ViewTestCase):
 
         self.assertTrue(view_object.mock_method_called)
 
+    def test_view_object_should_have_request_and_arguments(self):
+        request = 'request'
+        args = ('a', 'b')
+        kwargs = {'c': 'c'}
+
+        view_object = self.create_view_object(request, *args, **kwargs)
+
+        self.assertEqual(view_object.request, 'request')
+        self.assertEqual(view_object.args, args)
+        self.assertEqual(view_object.kwargs, kwargs)
+
 
 class KwargsViewTestCaseTest(testcases.ViewTestCase):
     view_class = KwargsMockView
