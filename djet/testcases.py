@@ -53,8 +53,7 @@ class ViewTestCase(django_test.TestCase):
 
     def create_view_object(self, request=None, *args, **kwargs):
         view_object = self.view_class(**self.get_view_kwargs())
-        if request is not None:
-            view_object.request = request
+        view_object.request = request
         view_object.args = args
         view_object.kwargs = kwargs
         return view_object

@@ -127,6 +127,9 @@ If you want to test function-based view you should do it like this:
 
 There is special ``create_view_object`` helper for testing single view methods,
 which applies the view_kwargs specified to created view object.
+You can also provide request, args and kwargs here and they will be bounded to view,
+like it normally happens in dispatch method.
+
 You can always create view object with different kwargs by using
 ``self.view_class`` constructor.
 
@@ -137,7 +140,8 @@ You can always create view object with different kwargs by using
         view_kwargs = {'redirect_url': '/'}
 
         def test_some_view_method(self):
-            view_object = self.create_view_object()
+            request = self.factory.get()
+            view_object = self.create_view_object(request, 'some arg', pk=1)
 
             view_object.some_method()
 
