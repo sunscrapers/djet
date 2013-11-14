@@ -9,6 +9,7 @@ setup(
     version='0.0.5',
     description='TestCase extension for Django views unit testing.',
     long_description=open('README.rst').read(),
+    license='MIT',
     author='SUNSCRAPERS',
     author_email='info@sunscrapers.com',
     packages=['djet'],
