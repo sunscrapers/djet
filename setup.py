@@ -15,4 +15,14 @@ setup(
     packages=['djet'],
     url='https://github.com/sunscrapers/djet',
     install_requires=requires,
+    classifiers=[
+        'Development Status :: 3 - Alpha',
+        'Environment :: Web Environment',
+        'Framework :: Django',
+        'Intended Audience :: Developers',
+        'License :: OSI Approved :: MIT License',
+        'Operating System :: OS Independent',
+        'Programming Language :: Python',
+        'Topic :: Software Development :: Testing'
+    ]
 )
