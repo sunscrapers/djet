@@ -1,8 +1,8 @@
 import os
 import datetime
+import six
 from django.core.files.storage import Storage, default_storage
 from django.core.files.uploadedfile import InMemoryUploadedFile
-from django.utils import six
 
 
 class InMemoryStorage(Storage):
@@ -73,7 +73,7 @@ class InMemoryStorageMixin(object):
         default_storage._wrapped = self._wrapped_storage
 
 
-def create_inmemory_file(file_name='tmp.txt', content=None, content_type=None):
+def create_inmemory_file(file_name='tmp.txt', content='', content_type=None):
     stream = six.StringIO()
     stream.write(content)
     file = InMemoryUploadedFile(stream, None, file_name, content_type, stream.tell(), None)

@@ -1,7 +1,8 @@
 from setuptools import setup
 
 requires = [
-    'Django>=1.3'
+    'Django>=1.3',
+    'six>=1.4.1',
 ]
 
 setup(
