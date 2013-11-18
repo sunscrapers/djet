@@ -7,7 +7,7 @@ requires = [
 
 setup(
     name='djet',
-    version='0.0.6',
+    version='0.0.7',
     description='TestCase extension for Django views unit testing.',
     long_description=open('README.rst').read(),
     license='MIT',
@@ -24,6 +24,7 @@ setup(
         'License :: OSI Approved :: MIT License',
         'Operating System :: OS Independent',
         'Programming Language :: Python',
+        'Programming Language :: Python :: 3',
         'Topic :: Software Development :: Testing'
     ]
 )

@@ -36,7 +36,7 @@ as an alternative to the DjangoCon approach.
 
 **djet** makes performing unit tests for your views easier by providing ``ViewTestCase``.
 Instead of ``self.client`` you will use ``self.factory`` which is an
-extended RequestFactory with with overridden shortcuts for creating requests
+extended ``RequestFactory`` with overridden shortcuts for creating requests
 (eg. ``path`` is not required parameter).
 
 Sometimes you would need middlewares to be applied in order to test the view.
