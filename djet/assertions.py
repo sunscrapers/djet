@@ -22,7 +22,7 @@ class StatusCodeAssertionsMixin(object):
         )
 
     def assert_status_in(self, response, status_codes_or_responses):
-        status_codes = map(self._get_status_code, status_codes_or_responses)
+        status_codes = list(map(self._get_status_code, status_codes_or_responses))
         self.assertIn(
             response.status_code,
             status_codes,
