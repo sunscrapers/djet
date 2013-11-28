@@ -42,6 +42,10 @@ extended ``RequestFactory`` with overridden shortcuts for creating requests
 Sometimes you would need middlewares to be applied in order to test the view.
 There is an option that helps specify which middlewares should be used in
 a single test or a whole test case by applying ``middleware_classes`` argument.
+This argument should be a list of middleware classes (e.g. ``SessionMiddleware``)
+or tuples where first argument is middleware class and rest items are middleware
+types (from ``MiddlewareType`` class). In this case only indicated middleware methods
+will be call.
 
 Additional assertions
 ---------------------
@@ -107,7 +111,7 @@ We encourage you to import whole djet modules, not classes.
         view_kwargs = {'some_kwarg': 'value'}
         middleware_classes = [
             SessionMiddleware,
-            MessageMiddleware,
+            (MessageMiddleware, testcases.MiddlewareType.PROCESS_REQUEST),
         ]
 
         def test_post_should_redirect_and_add_message_when_next_parameter(self):
