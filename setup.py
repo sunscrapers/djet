@@ -7,7 +7,7 @@ requires = [
 
 setup(
     name='djet',
-    version='0.0.7',
+    version='0.0.8',
     description='TestCase extension for Django views unit testing.',
     long_description=open('README.rst').read(),
     license='MIT',
