@@ -2,3 +2,4 @@
 .idea/
 .project
 .pydevproject
+.tox/
