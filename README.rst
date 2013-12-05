@@ -53,8 +53,9 @@ Additional assertions
 There are also some additional useful assertions in different mixins in
 ``djet.assertions`` module.
 
-Currently there are ``StatusCodeAssertionsMixin``, ``EmailAssertionsMixin``
-and ``MessagesAssertionsMixin`` full of useful assertions.
+Currently there are ``StatusCodeAssertionsMixin``, ``EmailAssertionsMixin``,
+``MessagesAssertionsMixin`` and ``InstanceAssertionsMixin``
+full of useful assertions.
 
 Remember that if you want to use assertions eg. from ``MessagesAssertionsMixin``
 you must also add ``middleware_classes`` required by messages to your test case.
@@ -151,7 +152,6 @@ You can always create view object with different kwargs by using
 
             self.assertTrue(view_object.some_method_called)
 
-
 An example of test using all files goodies from **djet**:
 
 .. code:: python
@@ -167,8 +167,25 @@ An example of test using all files goodies from **djet**:
 
             default_storage.save('file.txt', created_file)
 
-            self.assertTrue(default_storage.exists('file.txt))
+            self.assertTrue(default_storage.exists('file.txt'))
 
+You can also make assertions about the lifetime of model instances.
+The ``assert_instance_created`` and ``assert_instance_deleted`` methods of
+``InstanceAssertionsMixin`` can be used as context managers. They ensure
+that the code inside the ``with`` statement resulted in either creating
+or deleting a model instance.
+
+.. code:: python
+
+    from django.test import TestCase
+    from djet import assertions
+    from yourapp.models import YourModel
+
+    class YourModelTest(assertions.InstanceAssertionsMixin, TestCase):
+
+        def test_model_instance_is_created(self):
+            with self.assert_instance_created(YourModel, field='value'):
+                YourModel.objects.create(field='value')
 
 Utils example:
 

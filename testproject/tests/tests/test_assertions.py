@@ -3,8 +3,10 @@ from django.contrib.messages.middleware import MessageMiddleware
 from django.contrib.sessions.middleware import SessionMiddleware
 from django.core import mail
 from django.http import HttpResponse
+from django.test import TestCase
 from django.views import generic
 from djet import assertions, testcases
+from .. import models
 
 
 class MockView(generic.View):
@@ -144,3 +146,46 @@ class MessagesAssertionsMixin(assertions.MessagesAssertionsMixin, testcases.View
         self.view(request)
 
         self.assert_message_exists(request, messages.SUCCESS, 'asap urgent')
+
+
+class InstanceAssertionsMixinTest(assertions.InstanceAssertionsMixin, TestCase):
+
+    def test_assert_instance_exists_passes_for_existing_instances(self):
+        models.MockModel.objects.create(field='value')
+
+        self.assert_instance_exists(models.MockModel, field='value')
+
+    def test_assert_instance_exists_raises_assertion_error_when_no_instance(self):
+        with self.assertRaisesRegexp(AssertionError, 'No MockModel found'):
+            self.assert_instance_exists(models.MockModel, field='value')
+
+    def test_assert_instance_does_not_exist_passes_for_nonexisting_instances(self):
+        self.assert_instance_does_not_exist(models.MockModel, field='value')
+
+    def test_assert_instance_does_not_exist_raises_assertion_error_when_instance_found(self):
+        models.MockModel.objects.create(field='value')
+
+        with self.assertRaisesRegexp(AssertionError, 'A MockModel was found'):
+            self.assert_instance_does_not_exist(models.MockModel, field='value')
+
+    def test_assert_instance_created_passes_when_instance_created(self):
+        with self.assert_instance_created(models.MockModel, field='value'):
+            models.MockModel.objects.create(field='value')
+
+    def test_assert_instance_created_raises_assertion_error_when_not_created(self):
+        with self.assertRaisesRegexp(AssertionError, 'No MockModel found'):
+            with self.assert_instance_created(models.MockModel, field='value'):
+                pass
+
+    def test_assert_instance_deleted_passes_when_instance_deleted(self):
+        models.MockModel.objects.create(field='value')
+
+        with self.assert_instance_deleted(models.MockModel, field='value'):
+            models.MockModel.objects.get(field='value').delete()
+
+    def test_assert_instance_deleted_raises_assertion_error_when_not_deleted(self):
+        models.MockModel.objects.create(field='value')
+
+        with self.assertRaisesRegexp(AssertionError, 'A MockModel was found'):
+            with self.assert_instance_deleted(models.MockModel, field='value'):
+                pass

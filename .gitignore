@@ -2,3 +2,5 @@
 .idea/
 .project
 .pydevproject
+.tox/
+*.egg-info/

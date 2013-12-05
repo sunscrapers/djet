@@ -126,3 +126,79 @@ class MessagesAssertionsMixin(object):
             messages.get_messages(request),
             'Message matching criteria does not exist'
         )
+
+
+class _InstanceContext(object):
+    """
+    Context manager returned by assert_instance_created/deleted.
+    """
+    def __init__(self, enter_assertion, exit_assertion, model_class, **kwargs):
+        self.enter_assertion = enter_assertion
+        self.exit_assertion = exit_assertion
+        self.model_class = model_class
+        self.kwargs = kwargs
+
+    def __enter__(self):
+        self.enter_assertion(self.model_class, **self.kwargs)
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        self.exit_assertion(self.model_class, **self.kwargs)
+        return True
+
+
+class InstanceAssertionsMixin(object):
+    """
+    ORM-related assertions for testing instance creation and deletion.
+    """
+    def assert_instance_exists(self, model_class, **kwargs):
+        try:
+            obj = model_class._default_manager.get(**kwargs)
+            self.assertIsNotNone(obj)
+        except model_class.DoesNotExist:
+            raise AssertionError('No {0} found matching the criteria.'.format(
+                    model_class.__name__,
+                )
+            )
+
+    def assert_instance_does_not_exist(self, model_class, **kwargs):
+        try:
+            instance = model_class._default_manager.get(**kwargs)
+            raise AssertionError('A {0} was found matching the criteria. ({1})'.format(
+                model_class.__name__,
+                instance,
+            ))
+        except model_class.DoesNotExist:
+            pass
+
+    def assert_instance_created(self, model_class, **kwargs):
+        """
+        Checks if a model instance was created in the database.
+
+        For example::
+
+        >>> with self.assert_instance_created(Article, slug='lorem-ipsum'):
+        ...     Article.objects.create(slug='lorem-ipsum')
+        """
+        return _InstanceContext(
+            self.assert_instance_does_not_exist,
+            self.assert_instance_exists,
+            model_class,
+            **kwargs
+        )
+
+    def assert_instance_deleted(self, model_class, **kwargs):
+        """
+        Checks if the model instance was deleted from the database.
+
+        For example::
+
+        >>> with self.assert_instance_deleted(Article, slug='lorem-ipsum'):
+        ...     Article.objects.get(slug='lorem-ipsum').delete()
+        """
+        return _InstanceContext(
+            self.assert_instance_exists,
+            self.assert_instance_does_not_exist,
+            model_class,
+            **kwargs
+        )
