@@ -1,6 +1,8 @@
 djet
 ===================
 
+|Build Status|
+
 **Django Extended Tests** is set of helpers for easy testing of Django apps.
 
 Main features:
@@ -17,12 +19,10 @@ Main features:
 
 Developed by `SUNSCRAPERS <http://sunscrapers.com>`__ with passion & patience.
 
-|Build Status|
-
 Installation
 ============
 
-To install **djet** use PyPI:
+To install **djet** use ``pip``:
 
 ``$ pip install djet``
 
