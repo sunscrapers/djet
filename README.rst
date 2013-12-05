@@ -1,14 +1,19 @@
 djet
 ===================
 
-**Django Extended Tests** is set of helpers for easy unit testing of Django views.
+**Django Extended Tests** is set of helpers for easy testing of Django apps.
 
-We have written those tools seperately while testing many Django applications and finally put it together.
+Main features:
+
+- easy unit testing of Django views (``ViewTestCase``)
+- additional useful assertions for testing:
+  - response status codes (``StatusCodeAssertionsMixin``)
+  - emails (``EmailAssertionsMixin``)
+  - messages (``MessagesAssertionsMixin``)
+  - model instances (``InstanceAssertionsMixin``)
+- handy helpers for testing file-related code (``InMemoryStorageMixin`` and others)
 
 Developed by `SUNSCRAPERS <http://sunscrapers.com>`__ with passion & patience.
-
-We should warn you that before hitting 0.1.0 changes in **djet** may be rapid
-and we cannot guarantee backward-compatibility.
 
 |Build Status|
 
