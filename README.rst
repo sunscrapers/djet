@@ -7,10 +7,12 @@ Main features:
 
 - easy unit testing of Django views (``ViewTestCase``)
 - additional useful assertions for testing:
+
   - response status codes (``StatusCodeAssertionsMixin``)
   - emails (``EmailAssertionsMixin``)
   - messages (``MessagesAssertionsMixin``)
   - model instances (``InstanceAssertionsMixin``)
+
 - handy helpers for testing file-related code (``InMemoryStorageMixin`` and others)
 
 Developed by `SUNSCRAPERS <http://sunscrapers.com>`__ with passion & patience.
