@@ -6,7 +6,7 @@ from django.http import HttpResponse
 from django.test import TestCase
 from django.views import generic
 from djet import assertions, testcases
-from .. import models
+from tests import models
 
 
 class MockView(generic.View):
