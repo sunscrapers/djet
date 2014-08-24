@@ -73,8 +73,8 @@ class InMemoryStorageMixin(object):
         default_storage._wrapped = self._wrapped_storage
 
 
-def create_inmemory_file(file_name='tmp.txt', content='', content_type=None):
-    stream = six.StringIO()
+def create_inmemory_file(file_name='tmp.txt', content=b'', content_type=None):
+    stream = six.BytesIO()
     stream.write(content)
     file = InMemoryUploadedFile(stream, None, file_name, content_type, stream.tell(), None)
     file.seek(0)

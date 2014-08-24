@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.core.handlers.wsgi import WSGIRequest
 from rest_framework import generics, authentication, permissions, status
 from tests import models
-from djet import assertions, utils, restframework as djet_restframework
+from djet import assertions, files, utils, restframework as djet_restframework
 
 
 class APIRequestFactoryTest(django_test.TestCase):
@@ -42,6 +42,10 @@ class LoginRequiredRetrieveAPIView(generics.RetrieveAPIView):
 
 class CreateAPIView(generics.CreateAPIView):
     model = models.MockModel
+
+
+class MockFileModelCreateAPIView(generics.CreateAPIView):
+    model = models.MockFileModel
 
 
 class RetrieveUpdateAPIViewTestCaseTest(assertions.StatusCodeAssertionsMixin, djet_restframework.APIViewTestCase):
@@ -91,9 +95,27 @@ class CreateAPIViewTestCaseTest(assertions.StatusCodeAssertionsMixin, djet_restf
         data = {
             'field': 'test value',
         }
-        request = self.factory.post(data=data)
+        request = self.factory.post(data=data, format='json')
 
         response = self.view(request)
 
         self.assert_status_equal(response, status.HTTP_201_CREATED)
 
+
+class MockFileModelCreateAPIViewTestCaseTest(
+    assertions.StatusCodeAssertionsMixin,
+    files.InMemoryStorageMixin,
+    djet_restframework.APIViewTestCase
+):
+    view_class = MockFileModelCreateAPIView
+
+    def test_post_should_create_model(self):
+        data = {
+            'field': 'test value',
+            'file': files.create_inmemory_file('test.txt', content=b'Hello multipart!'),
+        }
+        request = self.factory.post(data=data, format='multipart')
+
+        response = self.view(request)
+
+        self.assert_status_equal(response, status.HTTP_201_CREATED)

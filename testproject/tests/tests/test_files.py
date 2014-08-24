@@ -12,10 +12,10 @@ except ImportError:
 class InMemoryFilesTestCase(TestCase):
 
     def test_make_inmemory_file_should_pass(self):
-        file = files.create_inmemory_file('test.txt', 'Avada Kedavra')
+        file = files.create_inmemory_file('test.txt', b'Avada Kedavra')
 
         self.assertEqual(file.name, 'test.txt')
-        self.assertIn('Avada Kedavra', file.readlines())
+        self.assertIn(b'Avada Kedavra', file.readlines())
 
     @unittest.skipUnless(PIL, 'PIL is not installed')
     def test_make_inmemory_image_should_pass(self):
@@ -28,7 +28,7 @@ class InMemoryStorageTestCase(files.InMemoryStorageMixin, TestCase):
 
     def setUp(self):
         self.file_name = 'test.txt'
-        self.file = files.create_inmemory_file(self.file_name, 'Avada Kedavra')
+        self.file = files.create_inmemory_file(self.file_name, b'Avada Kedavra')
         default_storage.save(self.file_name, self.file)
 
     def test_aaa_just_saving_file(self):
@@ -57,7 +57,7 @@ class InMemoryStorageTestCase(files.InMemoryStorageMixin, TestCase):
 
     def test_listdir_should_return_proper_paths(self):
         file_name = '/a/b/test.txt'
-        new_file = files.create_inmemory_file(file_name, 'Avada Kedavra')
+        new_file = files.create_inmemory_file(file_name, b'Avada Kedavra')
         default_storage.save(file_name, new_file)
 
         dirs, files_list = default_storage.listdir('/')
