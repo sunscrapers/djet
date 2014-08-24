@@ -1,3 +1,4 @@
+import django
 from django.core.handlers.wsgi import WSGIRequest
 from django import test as django_test
 from django.http import HttpResponse
@@ -78,7 +79,7 @@ def mock_function_view(request):
     return HttpResponse(status=200)
 
 
-class ViewTestCaseTest(testcases.ViewTestCase):
+class ViewTestCaseTestMixin(object):
     view_class = MockView
     middleware_classes = [MockMiddleware]
 
@@ -117,6 +118,22 @@ class ViewTestCaseTest(testcases.ViewTestCase):
         response = self.view(request)
 
         self.assertTrue(response.process_response_was_here)
+
+
+class ViewTestCaseTest(ViewTestCaseTestMixin, testcases.ViewTestCase):
+    pass
+
+
+class ViewTransactionTestCaseTest(ViewTestCaseTestMixin, testcases.ViewTransactionTestCase):
+    pass
+
+if django.VERSION >= (1, 4):
+    class ViewLiveServerTestCaseTest(ViewTestCaseTestMixin, testcases.ViewLiveServerTestCase):
+        pass
+
+if django.VERSION >= (1, 5):
+    class ViewSimpleTestCaseTest(ViewTestCaseTestMixin, testcases.ViewSimpleTestCase):
+        pass
 
 
 class ProcessExceptionMiddlewareViewTestCaseTest(testcases.ViewTestCase):

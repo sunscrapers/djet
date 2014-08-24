@@ -17,3 +17,5 @@ MIDDLEWARE_CLASSES = (
 INSTALLED_APPS = (
     'tests',
 )
+
+STATIC_URL = '/static/'

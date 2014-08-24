@@ -1,4 +1,5 @@
 from functools import partial
+import django
 from django import test as django_test
 from django.template.response import TemplateResponse
 
@@ -30,7 +31,7 @@ class MiddlewareType:
     PROCESS_TEMPLATE_RESPONSE = 'process_template_response'
 
 
-class ViewTestCase(django_test.TestCase):
+class ViewTestCaseMixin(object):
     view_class = None
     view_function = None
     view_kwargs = None
@@ -38,7 +39,7 @@ class ViewTestCase(django_test.TestCase):
     middleware_classes = None
 
     def _pre_setup(self, *args, **kwargs):
-        super(ViewTestCase, self)._pre_setup(*args, **kwargs)
+        super(ViewTestCaseMixin, self)._pre_setup(*args, **kwargs)
         if self.factory_class:
             self.factory = self.factory_class(self.get_middleware_classes())
 
@@ -121,3 +122,20 @@ class ViewTestCase(django_test.TestCase):
             return result
 
         return processor
+
+
+class ViewTransactionTestCase(ViewTestCaseMixin, django_test.TransactionTestCase):
+    pass
+
+
+class ViewTestCase(ViewTestCaseMixin, django_test.TestCase):
+    pass
+
+
+if django.VERSION >= (1, 4):
+    class ViewLiveServerTestCase(ViewTestCaseMixin, django_test.LiveServerTestCase):
+        pass
+
+if django.VERSION >= (1, 5):
+    class ViewSimpleTestCase(ViewTestCaseMixin, django_test.SimpleTestCase):
+        pass
