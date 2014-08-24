@@ -5,6 +5,7 @@ python:
   - "2.7"
   - "3.2"
   - "3.3"
+  - "3.4"
 
 env:
   - DJANGO_VERSION=1.3.7
@@ -15,9 +16,10 @@ env:
 install:
   - pip install -q Django==$DJANGO_VERSION
   - pip install -q Pillow
+  - pip install -q djangorestframework
   - python setup.py -q install
 
-script: testproject/manage.py test
+script: testproject/manage.py test tests
 
 matrix:
   exclude:
