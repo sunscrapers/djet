@@ -7,7 +7,7 @@ requires = [
 
 setup(
     name='djet',
-    version='0.0.9',
+    version='0.0.10',
     description='Set of helpers for easy testing of Django apps.',
     long_description=open('README.rst').read(),
     license='MIT',
