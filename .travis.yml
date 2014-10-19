@@ -6,28 +6,33 @@ python:
   - "3.2"
   - "3.3"
   - "3.4"
+  - "pypy"
+  - "pypy3"
 
 env:
-  - DJANGO_VERSION=1.4.15
-  - DJANGO_VERSION=1.5.10
-  - DJANGO_VERSION=1.6.7
-  - DJANGO_VERSION=1.7
+  - DJANGO_VERSION='DJANGO>=1.4.0,<1.5.0'
+  - DJANGO_VERSION='DJANGO>=1.5.0,<1.6.0'
+  - DJANGO_VERSION='DJANGO>=1.6.0,<1.7.0'
+  - DJANGO_VERSION='DJANGO>=1.7.0,<1.8.0'
 
 install:
-  - pip install -q Django==$DJANGO_VERSION
-  - pip install -q Pillow
-  - pip install -q djangorestframework
+  - travis_retry pip install -q $DJANGO_VERSION
+  - travis_retry pip install -q Pillow
+  - travis_retry pip install -q djangorestframework
   - python setup.py -q install
 
 script: testproject/manage.py test tests
 
 matrix:
+  fast_finish: true
   exclude:
     - python: "2.6"
-      env: DJANGO_VERSION=1.7
+      env: DJANGO_VERSION='DJANGO>=1.7.0,<1.8.0'
     - python: "3.2"
-      env: DJANGO_VERSION=1.4.15
+      env: DJANGO_VERSION='DJANGO>=1.4.0,<1.5.0'
     - python: "3.3"
-      env: DJANGO_VERSION=1.4.15
+      env: DJANGO_VERSION='DJANGO>=1.4.0,<1.5.0'
     - python: "3.4"
-      env: DJANGO_VERSION=1.4.15
+      env: DJANGO_VERSION='DJANGO>=1.4.0,<1.5.0'
+    - python: "pypy3"
+      env: DJANGO_VERSION='DJANGO>=1.4.0,<1.5.0'
