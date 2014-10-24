@@ -2,6 +2,7 @@ djet
 ===================
 
 |Build Status|
+|Coverage|
 
 **Django Extended Tests** is set of helpers for easy testing of Django apps.
 
@@ -220,3 +221,6 @@ Utils example:
 
 .. |Build Status| image:: https://travis-ci.org/sunscrapers/djet.png
    :target: https://travis-ci.org/sunscrapers/djet
+
+.. |Coverage| image:: https://coveralls.io/repos/sunscrapers/djet/badge.png?branch=master
+   :target: https://coveralls.io/r/sunscrapers/djet?branch=master
