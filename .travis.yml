@@ -17,9 +17,12 @@ install:
   - pip install -q Django==$DJANGO_VERSION
   - pip install -q Pillow
   - pip install -q djangorestframework
+  - pip install coveralls
   - python setup.py -q install
 
-script: testproject/manage.py test tests
+script: coverage run --source=djet testproject/manage.py test tests
+after_success:
+  coveralls
 
 matrix:
   exclude:
