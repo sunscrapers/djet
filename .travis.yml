@@ -16,7 +16,7 @@ env:
 install:
   - pip install -q Django==$DJANGO_VERSION
   - pip install -q Pillow
-  - pip install -q djangorestframework
+  - pip install -q djangorestframework=2.4.4
   - pip install coveralls
   - python setup.py -q develop
 
