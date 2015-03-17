@@ -1,7 +1,7 @@
 from django import test as django_test
 from django.contrib.auth.models import User
 from django.core.handlers.wsgi import WSGIRequest
-from rest_framework import generics, authentication, permissions, status
+from rest_framework import generics, authentication, permissions, status, serializers
 from tests import models
 from djet import assertions, files, utils, restframework as djet_restframework
 
@@ -30,22 +30,38 @@ class APIRequestFactoryTest(django_test.TestCase):
         self.assertEqual(request._force_auth_user, user_mock)
 
 
+class MockModelSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = models.MockModel
+
+
+class MockFileModelSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = models.MockFileModel
+
+
 class RetrieveUpdateAPIView(generics.RetrieveUpdateAPIView):
-    model = models.MockModel
+    queryset = models.MockModel.objects.all()
+    serializer_class = MockModelSerializer
 
 
 class LoginRequiredRetrieveAPIView(generics.RetrieveAPIView):
-    model = models.MockModel
+    queryset = models.MockModel.objects.all()
+    serializer_class = MockModelSerializer
     authentication_classes = (authentication.TokenAuthentication,)
     permission_classes = (permissions.IsAuthenticated,)
 
 
 class CreateAPIView(generics.CreateAPIView):
-    model = models.MockModel
+    queryset = models.MockModel.objects.all()
+    serializer_class = MockModelSerializer
 
 
 class MockFileModelCreateAPIView(generics.CreateAPIView):
-    model = models.MockFileModel
+    queryset = models.MockFileModel.objects.all()
+    serializer_class = MockFileModelSerializer
 
 
 class RetrieveUpdateAPIViewTestCaseTest(assertions.StatusCodeAssertionsMixin, djet_restframework.APIViewTestCase):

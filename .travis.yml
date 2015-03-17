@@ -8,15 +8,15 @@ python:
   - "3.4"
 
 env:
-  - DJANGO_VERSION=1.4.15
-  - DJANGO_VERSION=1.5.10
-  - DJANGO_VERSION=1.6.7
-  - DJANGO_VERSION=1.7
+  - DJANGO_VERSION=1.4.19
+  - DJANGO_VERSION=1.5.12
+  - DJANGO_VERSION=1.6.10
+  - DJANGO_VERSION=1.7.6
 
 install:
   - pip install -q Django==$DJANGO_VERSION
   - pip install -q Pillow
-  - pip install -q djangorestframework==2.4.4
+  - pip install -q djangorestframework==3.1.0
   - pip install coveralls
   - python setup.py -q develop
 
@@ -27,10 +27,10 @@ after_success:
 matrix:
   exclude:
     - python: "2.6"
-      env: DJANGO_VERSION=1.7
+      env: DJANGO_VERSION=1.7.6
     - python: "3.2"
-      env: DJANGO_VERSION=1.4.15
+      env: DJANGO_VERSION=1.4.19
     - python: "3.3"
-      env: DJANGO_VERSION=1.4.15
+      env: DJANGO_VERSION=1.4.19
     - python: "3.4"
-      env: DJANGO_VERSION=1.4.15
+      env: DJANGO_VERSION=1.4.19
