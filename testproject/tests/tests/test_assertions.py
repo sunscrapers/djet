@@ -26,7 +26,7 @@ class StatusCodeAssertionsMixinTest(assertions.StatusCodeAssertionsMixin, testca
         self.assert_not_redirect(response)
 
     def test_assert_redirect_should_pass_when_view_redirect(self):
-        view = generic.RedirectView.as_view(url='/')
+        view = generic.RedirectView.as_view(url='/', permanent=True)
         request = self.factory.get()
 
         response = view(request)
