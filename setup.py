@@ -1,21 +1,20 @@
+import codecs
 from setuptools import setup
 
-requires = [
-    'Django>=1.3',
-    'six>=1.4.1',
-]
+requirements = [i.strip() for i in open('requirements.txt').readlines()]
 
 setup(
     name='djet',
     version='0.0.10',
     description='Set of helpers for easy testing of Django apps.',
-    long_description=open('README.rst').read(),
+    long_description=codecs.open('README.rst', encoding='utf-8').read(),
     license='MIT',
     author='SUNSCRAPERS',
     author_email='info@sunscrapers.com',
     packages=['djet'],
     url='https://github.com/sunscrapers/djet',
-    install_requires=requires,
+    install_requires=requirements,
+    include_package_data=True,
     classifiers=[
         'Development Status :: 3 - Alpha',
         'Environment :: Web Environment',

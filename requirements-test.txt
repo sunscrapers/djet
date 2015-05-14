@@ -1,0 +1,5 @@
+-e .
+Pillow
+djangorestframework
+unittest2
+tox

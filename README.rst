@@ -1,5 +1,5 @@
 djet
-===================
+====
 
 |Build Status|
 |Coverage|
@@ -217,6 +217,21 @@ Utils example:
 
             changed_flower = utils.refresh(flower)
             self.assertEqual('blue', changed_flower.color)
+
+Development
+===========
+
+To start developing on **djet**, clone the repository:
+
+``$ git clone git@github.com:sunscrapers/djet.git``
+
+In order to run the tests create virtualenv, go to repo directory and then:
+
+``$ pip install -r requirements-test.txt``
+
+``$ cd testproject``
+
+``$ ./manage.py test``
 
 
 .. |Build Status| image:: https://travis-ci.org/sunscrapers/djet.png
