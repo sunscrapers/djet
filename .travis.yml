@@ -15,9 +15,8 @@ env:
   - DJANGO_VERSION=1.8.1
 
 install:
+  - pip install -q -r requirements-test.txt
   - pip install -q Django==$DJANGO_VERSION
-  - pip install -q Pillow
-  - pip install -q djangorestframework==3.1.1
   - pip install coveralls
   - python setup.py -q develop
 
