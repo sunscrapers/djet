@@ -246,6 +246,8 @@ Below there is an example of Django REST Framework authentication mocking. Pay a
             user = utils.refresh(user)
             self.assertEqual(data['new_username'], user.username)
 
+For more comprehensive examples we really recommend to `check out how djoser library tests are crafted <https://github.com/sunscrapers/djoser/blob/master/testproject/testapp/tests.py>`__.
+
 Development
 ===========
 
