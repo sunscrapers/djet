@@ -17,6 +17,7 @@ Main features:
   - model instances (``InstanceAssertionsMixin``)
 
 - handy helpers for testing file-related code (``InMemoryStorageMixin`` and others)
+- smooth integration with Django REST Framework authentication mechanisim (``APIViewTestCase``)
 
 Developed by `SUNSCRAPERS <http://sunscrapers.com>`__ with passion & patience.
 
@@ -37,7 +38,7 @@ Django test client performs integration tests. All middlewares, resolvers,
 decorators and so on are tested. Just a single failure in a middleware can
 break all the view tests.
 
-`One technique <http://tech.novapost.fr/static/images/slides/djangocon-europe-2013-unit-test-class-based-views.html>`__
+`One technique <http://tech.novapost.fr/django-unit-test-your-views-en.html>`__
 of performing the tests was presented at DjangoCon Europe 2013 Warsaw.
 We have always used a slightly different method, which we would like to present
 as an alternative to the DjangoCon approach.
@@ -217,6 +218,33 @@ Utils example:
 
             changed_flower = utils.refresh(flower)
             self.assertEqual('blue', changed_flower.color)
+
+Below there is an example of Django REST Framework authentication mocking. Pay attantion to ``djet.restframework.APIViewTestCase`` base class and ``user`` parameter in request factory call.
+
+.. code:: python
+
+    from django.contrib.auth import get_user_model
+    from djet import assertions, utils, restframework
+    import views
+
+    class SetUsernameViewTest(restframework.APIViewTestCase,
+                              assertions.StatusCodeAssertionsMixin):
+        view_class = views.SetUsernameView
+  
+        def test_post_should_set_new_username(self):
+            password = 'secret'
+            user = get_user_model().objects.create_user(username='john', password=password)
+            data = {
+                'new_username': 'ringo',
+                'current_password': password,
+            }
+            request = self.factory.post(user=user, data=data)
+    
+            response = self.view(request)
+    
+            self.assert_status_equal(response, status.HTTP_200_OK)
+            user = utils.refresh(user)
+            self.assertEqual(data['new_username'], user.username)
 
 Development
 ===========
