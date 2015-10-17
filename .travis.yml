@@ -1,38 +1,37 @@
 language: python
 
-python:
-  - "2.6"
-  - "2.7"
-  - "3.2"
-  - "3.3"
-  - "3.4"
-
 env:
-  - DJANGO_VERSION=1.4.19
-  - DJANGO_VERSION=1.5.12
-  - DJANGO_VERSION=1.6.11
-  - DJANGO_VERSION=1.7.7
-  - DJANGO_VERSION=1.8.1
+  - TOX_ENV=py26-dj14
+  - TOX_ENV=py26-dj15
+  - TOX_ENV=py26-dj16
+  - TOX_ENV=py27-dj14
+  - TOX_ENV=py27-dj15
+  - TOX_ENV=py27-dj16
+  - TOX_ENV=py27-dj17
+  - TOX_ENV=py27-dj18
+  - TOX_ENV=py32-dj15
+  - TOX_ENV=py32-dj16
+  - TOX_ENV=py32-dj17
+  - TOX_ENV=py32-dj18
+  - TOX_ENV=py33-dj15
+  - TOX_ENV=py33-dj16
+  - TOX_ENV=py33-dj17
+  - TOX_ENV=py33-dj18
+  - TOX_ENV=py34-dj15
+  - TOX_ENV=py34-dj16
+  - TOX_ENV=py34-dj17
+  - TOX_ENV=py34-dj18
+  - TOX_ENV=py35-dj15
+  - TOX_ENV=py35-dj16
+  - TOX_ENV=py35-dj17
+  - TOX_ENV=py35-dj18
 
 install:
-  - pip install -q -r requirements-test.txt
-  - pip install -q Django==$DJANGO_VERSION
-  - pip install coveralls
-  - python setup.py -q develop
+  - pip install tox
 
-script: coverage run --source=djet testproject/manage.py test tests
+script:
+  - tox -e $TOX_ENV
+
 after_success:
-  coveralls
-
-matrix:
-  exclude:
-    - python: "2.6"
-      env: DJANGO_VERSION=1.7.7
-    - python: "2.6"
-      env: DJANGO_VERSION=1.8.1
-    - python: "3.2"
-      env: DJANGO_VERSION=1.4.19
-    - python: "3.3"
-      env: DJANGO_VERSION=1.4.19
-    - python: "3.4"
-      env: DJANGO_VERSION=1.4.19
+  - pip install coveralls==0.5
+  - coveralls

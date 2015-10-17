@@ -4,3 +4,6 @@
 .pydevproject
 .tox/
 *.egg-info/
+build/
+dist/
+.coverage
