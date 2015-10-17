@@ -5,7 +5,7 @@ requirements = [i.strip() for i in open('requirements.txt').readlines()]
 
 setup(
     name='djet',
-    version='0.0.10',
+    version='0.1.0',
     description='Set of helpers for easy testing of Django apps.',
     long_description=codecs.open('README.rst', encoding='utf-8').read(),
     license='MIT',
