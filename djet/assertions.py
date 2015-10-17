@@ -202,3 +202,12 @@ class InstanceAssertionsMixin(object):
             model_class,
             **kwargs
         )
+
+
+class CompleteAssertionsMixin(
+    StatusCodeAssertionsMixin,
+    EmailAssertionsMixin,
+    MessagesAssertionsMixin,
+    InstanceAssertionsMixin,
+):
+    pass
