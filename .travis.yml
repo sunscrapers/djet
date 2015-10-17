@@ -26,6 +26,13 @@ env:
   - TOX_ENV=py35-dj17
   - TOX_ENV=py35-dj18
 
+matrix:
+  allow_failures:
+    - env: TOX_ENV=py35-dj15
+    - env: TOX_ENV=py35-dj16
+    - env: TOX_ENV=py35-dj17
+    - env: TOX_ENV=py35-dj18
+
 install:
   - pip install tox
 
