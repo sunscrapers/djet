@@ -37,6 +37,7 @@ class ViewTestCaseMixin(object):
     view_kwargs = None
     factory_class = RequestFactory
     middleware_classes = None
+    middleware = None
 
     def _pre_setup(self, *args, **kwargs):
         super(ViewTestCaseMixin, self)._pre_setup(*args, **kwargs)
@@ -57,71 +58,108 @@ class ViewTestCaseMixin(object):
         return view_object
 
     def view(self, request, *args, **kwargs):
-        response = self._create_middlewares_processor(
-            middleware_type=MiddlewareType.PROCESS_REQUEST,
-            reverse=False,
-            return_fast=True,
-        )(request)
-        if not response:
-            response = self._create_middlewares_processor(
-                middleware_type=MiddlewareType.PROCESS_VIEW,
-                reverse=False,
-                return_fast=True,
-            )(request, self.view, args, kwargs)
-            if not response:
-                try:
-                    response = self._run_view(request, args, kwargs)
-                except Exception as exception:
-                    response = self._create_middlewares_processor(
-                        middleware_type=MiddlewareType.PROCESS_EXCEPTION,
-                        reverse=True,
-                        return_fast=True,
-                    )(request, exception)
-                    if not response:
-                        raise
-        if isinstance(response, TemplateResponse):
-            response = self._create_middlewares_processor(
-                middleware_type=MiddlewareType.PROCESS_TEMPLATE_RESPONSE,
-                reverse=True,
-                return_fast=False,
-                start_with=response,
-            )(request, response)
-        response = self._create_middlewares_processor(
-            middleware_type=MiddlewareType.PROCESS_RESPONSE,
-            reverse=True,
-            return_fast=False,
-            start_with=response,
-        )(request, response)
+        self.args = args
+        self.kwargs = kwargs
+        self._load_middleware()
+        if self.middleware:
+            response = self._middleware_chain(request)
+        else:
+            response = None
+            for middleware_method in self._request_middleware:
+                response = middleware_method(request)
+                if response:
+                    break
+
+            if response is None:
+                response = self._get_response(request)
+
+        for middleware_method in self._response_middleware:
+            response = middleware_method(request, response)
+
         return response
 
-    def _run_view(self, request, args, kwargs):
-        if self.view_class:
-            response = self.view_class.as_view(**self.get_view_kwargs())(request, *args, **kwargs)
-        elif self.view_function:
-            response = self.__class__.__dict__['view_function'](request, *args, **kwargs)
-        return response
+    def _load_middleware(self):
+        self._request_middleware = []
+        self._view_middleware = []
+        self._template_response_middleware = []
+        self._response_middleware = []
+        self._exception_middleware = []
 
-    def _create_middlewares_processor(self, middleware_type, reverse, return_fast, start_with=None):
-        middleware_classes = self.middleware_classes or []
-        if reverse:
-            middleware_classes = reversed(middleware_classes)
-
-        def processor(*args, **kwargs):
-            result = start_with
+        if self.middleware is None:
+            middleware_classes = self.middleware_classes or []
             for mw_class in middleware_classes:
                 if isinstance(mw_class, tuple):
                     mw_class, mw_types = mw_class[0], mw_class[1:]
                 else:
                     mw_types = None
                 mw_instance = mw_class()
-                if hasattr(mw_instance, middleware_type) and \
-                        (not mw_types or middleware_type in mw_types):
-                    result = getattr(mw_instance, middleware_type)(*args, **kwargs) or result
-                    if return_fast and result:
-                        break
-            return result
 
-        return processor
+                if self._add_middleware(mw_instance, mw_types, MiddlewareType.PROCESS_REQUEST):
+                    self._request_middleware.append(mw_instance.process_request)
+                if self._add_middleware(mw_instance, mw_types, MiddlewareType.PROCESS_VIEW):
+                    self._view_middleware.append(mw_instance.process_view)
+                if self._add_middleware(mw_instance, mw_types, MiddlewareType.PROCESS_TEMPLATE_RESPONSE):
+                    self._template_response_middleware.insert(0, mw_instance.process_template_response)
+                if self._add_middleware(mw_instance, mw_types, MiddlewareType.PROCESS_RESPONSE):
+                    self._response_middleware.insert(0, mw_instance.process_response)
+                if self._add_middleware(mw_instance, mw_types, MiddlewareType.PROCESS_EXCEPTION):
+                    self._exception_middleware.insert(0, mw_instance.process_exception)
+        else:
+            if django.VERSION < (1, 10):
+                raise NotImplementedError('New style middleware is not intended to be used with older django versions')
+            from django.core.handlers.exception import convert_exception_to_response
+            handler = convert_exception_to_response(self._get_response)
+            middleware_classes = reversed(self.middleware or [])
+            for mw_class in middleware_classes:
+                if isinstance(mw_class, tuple):
+                    mw_class, mw_types = mw_class[0], mw_class[1:]
+                else:
+                    mw_types = None
+                mw_instance = mw_class(handler)
+
+                if self._add_middleware(mw_instance, mw_types, MiddlewareType.PROCESS_VIEW):
+                    self._view_middleware.insert(0, mw_instance.process_view)
+                if self._add_middleware(mw_instance, mw_types, MiddlewareType.PROCESS_TEMPLATE_RESPONSE):
+                    self._template_response_middleware.append(mw_instance.process_template_response)
+                if self._add_middleware(mw_instance, mw_types, MiddlewareType.PROCESS_EXCEPTION):
+                    self._exception_middleware.append(mw_instance.process_exception)
+
+                handler = convert_exception_to_response(mw_instance)
+            self._middleware_chain = handler
+
+    def _get_response(self, request):
+        response = None
+        for middleware_method in self._view_middleware:
+            response = middleware_method(request, self._run_view, self.args, self.kwargs)
+            if response:
+                break
+        if response is None:
+            try:
+                response = self._run_view(request)
+            except Exception as e:
+                response = self._process_exception_by_middleware(e, request)
+        if hasattr(response, 'render') and callable(response.render):
+            for middleware_method in self._template_response_middleware:
+                response = middleware_method(request, response)
+
+        return response
+
+    def _process_exception_by_middleware(self, exception, request):
+        for middleware_method in self._exception_middleware:
+            response = middleware_method(request, exception)
+            if response:
+                return response
+        raise
+
+    def _add_middleware(self, mw_instance, mw_types, middleware_type):
+        return hasattr(mw_instance, middleware_type) and (not mw_types or middleware_type in mw_types)
+
+    def _run_view(self, request):
+        if self.view_class:
+            response = self.view_class.as_view(**self.get_view_kwargs())(request, *self.args, **self.kwargs)
+        elif self.view_function:
+            response = self.__class__.__dict__['view_function'](request, *self.args, **self.kwargs)
+        return response
 
 
 class ViewTransactionTestCase(ViewTestCaseMixin, django_test.TransactionTestCase):

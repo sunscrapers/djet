@@ -26,6 +26,16 @@ class MockMiddleware(object):
         return respone
 
 
+class NewStyleMiddleware(object):
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        response = self.get_response(request)
+        response.new_middleware = True
+        return response
+
+
 class ProcessViewMockMiddleware(object):
 
     def process_view(self, request, view_func, view_args, view_kwargs):
@@ -209,3 +219,20 @@ class ViewTestCaseFunctionViewTest(testcases.ViewTestCase):
         response = self.view(request)
 
         self.assertEqual(response.status_code, 200)
+
+
+class NewStyleMiddlewareTest(testcases.ViewTestCase):
+    view_class = MockView
+    middleware = [NewStyleMiddleware]
+
+    def test_new_middleware(self):
+        request = self.factory.get()
+
+        try:
+            response = self.view(request)
+        except NotImplementedError:
+            if django.VERSION >= (1, 10):
+                assert True
+
+        if django.VERSION >= (1, 10):
+            self.assertTrue(response.new_middleware)
