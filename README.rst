@@ -258,6 +258,7 @@ To start developing on **djet**, clone the repository:
 In order to run the tests create virtualenv, go to repo directory and then:
 
 ``$ pip install django``
+
 ``$ pip install -r requirements.txt``
 
 ``$ cd testproject``
