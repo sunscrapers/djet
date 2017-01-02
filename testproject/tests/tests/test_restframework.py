@@ -34,14 +34,14 @@ class MockModelSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.MockModel
-        fields = '__all__'
+        fields = ('field',)
 
 
 class MockFileModelSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.MockFileModel
-        fields = '__all__'
+        fields = ('field', 'file')
 
 
 class RetrieveUpdateAPIView(generics.RetrieveUpdateAPIView):
