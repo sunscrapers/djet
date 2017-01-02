@@ -1,8 +1,6 @@
 import codecs
 from setuptools import setup
 
-requirements = [i.strip() for i in open('requirements.txt').readlines()]
-
 setup(
     name='djet',
     version='0.2.0',
@@ -13,7 +11,7 @@ setup(
     author_email='info@sunscrapers.com',
     packages=['djet'],
     url='https://github.com/sunscrapers/djet',
-    install_requires=requirements,
+    install_requires=[],
     include_package_data=True,
     classifiers=[
         'Development Status :: 3 - Alpha',

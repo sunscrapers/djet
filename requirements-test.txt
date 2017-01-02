@@ -1,6 +1,0 @@
--e .
-Pillow
-unittest2
-tox
-coverage==3.7.1
-djangorestframework>=3.1

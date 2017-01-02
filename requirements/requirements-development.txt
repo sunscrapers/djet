@@ -1,0 +1,4 @@
+Pillow==3.4.2
+unittest2
+tox
+coverage==3.7.1
