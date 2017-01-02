@@ -10,9 +10,9 @@ env:
   - TOX_ENV=py27-dj15-rf31
   - TOX_ENV=py27-dj16-rf31
   - TOX_ENV=py27-dj17-rf31
-  - TOX_ENV=py27-dj18-rf34
-  - TOX_ENV=py27-dj19-rf34
-  - TOX_ENV=py27-dj110-rf34
+  - TOX_ENV=py27-dj18-rf35
+  - TOX_ENV=py27-dj19-rf35
+  - TOX_ENV=py27-dj110-rf35
   - TOX_ENV=py33-dj15-rf31
   - TOX_ENV=py33-dj16-rf31
   - TOX_ENV=py33-dj17-rf31
@@ -21,12 +21,12 @@ env:
   - TOX_ENV=py34-dj16-rf31
   - TOX_ENV=py34-dj17-rf31
   - TOX_ENV=py34-dj18-rf31
-  - TOX_ENV=py34-dj18-rf34
-  - TOX_ENV=py34-dj19-rf34
-  - TOX_ENV=py34-dj110-rf34
-  - TOX_ENV=py35-dj18-rf34
-  - TOX_ENV=py35-dj19-rf34
-  - TOX_ENV=py35-dj110-rf34
+  - TOX_ENV=py34-dj18-rf35
+  - TOX_ENV=py34-dj19-rf35
+  - TOX_ENV=py34-dj110-rf35
+  - TOX_ENV=py35-dj18-rf35
+  - TOX_ENV=py35-dj19-rf35
+  - TOX_ENV=py35-dj110-rf35
 
 install:
   - pip install tox
