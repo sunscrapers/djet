@@ -1,3 +1,4 @@
+-e .
 Pillow==3.4.2
 unittest2
 tox
