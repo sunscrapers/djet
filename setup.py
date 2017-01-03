@@ -3,7 +3,7 @@ from setuptools import setup
 
 setup(
     name='djet',
-    version='0.2.0',
+    version='0.2.1',
     description='Set of helpers for easy testing of Django apps.',
     long_description=codecs.open('README.rst', encoding='utf-8').read(),
     license='MIT',
