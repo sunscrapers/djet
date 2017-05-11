@@ -12,7 +12,7 @@ class RequestFactory(django_test.RequestFactory):
         self._override_shortcuts()
 
     def _override_shortcuts(self):
-        for method in ('get', 'post', 'head', 'delete', 'options', 'put'):
+        for method in ('get', 'post', 'head', 'delete', 'options', 'put', 'patch'):
             shortcut = partial(self._request, method)
             setattr(self, method, shortcut)
 
