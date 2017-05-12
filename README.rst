@@ -94,11 +94,6 @@ it only should implement ``clear`` method which is invoked after tearDown.
 ``InMemoryStorageMixin`` cannot be used with bare ``unittest.TestCase``,
 you have to use ``TestCase`` from Django or ``ViewTestCase`` from **djet**.
 
-Other utils
------------
-
-``utils.refresh`` helps you get newer version of object from database
-in a very simple way.
 
 Examples
 ========
@@ -216,8 +211,8 @@ Utils example:
 
             self.view(request)
 
-            changed_flower = utils.refresh(flower)
-            self.assertEqual('blue', changed_flower.color)
+            flower.refresh_from_db()
+            self.assertEqual('blue', flower.color)
 
 Below there is an example of Django REST Framework authentication mocking. Pay attantion to ``djet.restframework.APIViewTestCase`` base class and ``user`` parameter in request factory call.
 
@@ -243,7 +238,7 @@ Below there is an example of Django REST Framework authentication mocking. Pay a
             response = self.view(request)
     
             self.assert_status_equal(response, status.HTTP_200_OK)
-            user = utils.refresh(user)
+            user.refresh_from_db()
             self.assertEqual(data['new_username'], user.username)
 
 For more comprehensive examples we really recommend to `check out how djoser library tests are crafted <https://github.com/sunscrapers/djoser/blob/master/testproject/testapp/tests.py>`__.
