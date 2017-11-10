@@ -20,9 +20,9 @@ class InMemoryFilesTestCase(TestCase):
 
     @unittest.skipUnless(PIL, 'PIL is not installed')
     def test_make_inmemory_image_should_pass(self):
-        file = files.create_inmemory_image('test.jpg', format='JPEG')
+        file = files.create_inmemory_image('test.png', format='PNG')
 
-        self.assertEqual(file.name, 'test.jpg')
+        self.assertEqual(file.name, 'test.png')
 
 
 class InMemoryStorageTestCase(files.InMemoryStorageMixin, TestCase):
