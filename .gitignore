@@ -1,9 +1,40 @@
-*.pyc
+# database files
+*.sqlite3
+
+# pycharm files
 .idea/
-.project
-.pydevproject
-.tox/
-*.egg-info/
+
+# Distribution
 build/
 dist/
+*.egg-info/
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Translations
+*.mo
+*.pot
+
+# Test files
+.cache/
+.tox/
 .coverage
+htmlcov/
+
+# dotenv
+.env
+
+# virtualenv
+env/
+.venv/
+venv/
+ENV/
+
+# osx
+*.DS_Store
+
+# logs
+*.log
