@@ -59,6 +59,10 @@ class RequestFactoryTest(django_test.TestCase):
 
         self.assertEqual(request.method, 'GET')
 
+    def test_create_patch_request_factory(self):
+        request = self.factory.patch()
+
+        self.assertEqual(request.method, 'PATCH')
 
 class MockView(generic.View):
 
