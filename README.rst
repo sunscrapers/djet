@@ -1,8 +1,15 @@
+====
 djet
 ====
 
-|Build Status|
-|Coverage|
+.. image:: https://img.shields.io/pypi/v/djet.svg
+  :target: https://pypi.org/project/djoser
+
+.. image:: https://img.shields.io/travis/sunscrapers/djet.svg
+  :target: https://travis-ci.org/sunscrapers/djoser
+
+.. image:: https://img.shields.io/codecov/c/github/sunscrapers/djet.svg
+  :target: https://codecov.io/gh/sunscrapers/djoser
 
 **Django Extended Tests** is set of helpers for easy testing of Django apps.
 
@@ -19,7 +26,7 @@ Main features:
 - handy helpers for testing file-related code (``InMemoryStorageMixin`` and others)
 - smooth integration with Django REST Framework authentication mechanisim (``APIViewTestCase``)
 
-Developed by `SUNSCRAPERS <http://sunscrapers.com>`__ with passion & patience.
+Developed by `SUNSCRAPERS <http://sunscrapers.com>`_ with passion & patience.
 
 Installation
 ============
@@ -214,7 +221,9 @@ Utils example:
             flower.refresh_from_db()
             self.assertEqual('blue', flower.color)
 
-Below there is an example of Django REST Framework authentication mocking. Pay attantion to ``djet.restframework.APIViewTestCase`` base class and ``user`` parameter in request factory call.
+Below there is an example of Django REST Framework authentication mocking.
+Pay attantion to ``djet.restframework.APIViewTestCase`` base class and ``user``
+parameter in request factory call.
 
 .. code:: python
 
@@ -241,7 +250,8 @@ Below there is an example of Django REST Framework authentication mocking. Pay a
             user.refresh_from_db()
             self.assertEqual(data['new_username'], user.username)
 
-For more comprehensive examples we really recommend to `check out how djoser library tests are crafted <https://github.com/sunscrapers/djoser/blob/master/testproject/testapp/tests.py>`__.
+For more comprehensive examples we really recommend to
+`check out how djoser library tests are crafted <https://github.com/sunscrapers/djoser/blob/master/testproject/testapp/tests.py>`__.
 
 Development
 ===========
@@ -261,9 +271,3 @@ In order to run the tests create virtualenv, go to repo directory and then:
 ``$ ./manage.py test``
 
 ``$ tox``
-
-.. |Build Status| image:: https://travis-ci.org/sunscrapers/djet.png
-   :target: https://travis-ci.org/sunscrapers/djet
-
-.. |Coverage| image:: https://coveralls.io/repos/sunscrapers/djet/badge.png?branch=master
-   :target: https://coveralls.io/r/sunscrapers/djet?branch=master
