@@ -1,5 +1,4 @@
 from django.test import TestCase
-from djet import utils
 from tests import models
 
 
@@ -10,5 +9,5 @@ class RefreshTest(TestCase):
 
         models.MockModel.objects.filter(pk=instance.pk).update(field='new')
 
-        instance = utils.refresh(instance)
+        instance.refresh_from_db()
         self.assertEqual(instance.field, 'new')

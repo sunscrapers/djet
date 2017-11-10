@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.core.handlers.wsgi import WSGIRequest
 from rest_framework import generics, authentication, permissions, status, serializers
 from tests import models
-from djet import assertions, files, utils, restframework as djet_restframework
+from djet import assertions, files, restframework as djet_restframework
 
 
 class APIRequestFactoryTest(django_test.TestCase):
@@ -88,7 +88,7 @@ class RetrieveUpdateAPIViewTestCaseTest(assertions.StatusCodeAssertionsMixin, dj
         response = self.view(request, pk=instance.pk)
 
         self.assert_status_equal(response, status.HTTP_200_OK)
-        instance = utils.refresh(instance)
+        instance.refresh_from_db()
         self.assertEqual(instance.field, data['field'])
 
 
