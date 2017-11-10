@@ -18,7 +18,8 @@ INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.sessions',
     'django.contrib.contenttypes',
-    'tests',
+
+    'testapp',
 )
 
 STATIC_URL = '/static/'
