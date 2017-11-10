@@ -1,3 +1,10 @@
+from __future__ import absolute_import
+import os
+
+DEBUG = False
+
+BASE_DIR = os.path.dirname(__file__)
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
