@@ -36,3 +36,7 @@ install:
 
 script:
   - tox
+
+after_success:
+  - travis_retry pip install -U codecov
+  - codecov
