@@ -1,7 +1,6 @@
 from functools import partial
 import django
 from django import test as django_test
-from django.template.response import TemplateResponse
 
 
 class RequestFactory(django_test.RequestFactory):
@@ -88,8 +87,6 @@ class ViewTestCaseMixin(object):
         if self.middleware is None:
             self._load_old_middleware()
         else:
-            if django.VERSION < (1, 10):
-                raise NotImplementedError('New style middleware is not intended to be used with older django versions')
             self._load_new_middleware()
 
     def _load_old_middleware(self):
