@@ -1,5 +1,6 @@
 import os
-import unittest2
+import unittest
+
 from django.core.files.storage import default_storage
 from django.test.testcases import TestCase
 from djet import files
@@ -17,7 +18,7 @@ class InMemoryFilesTestCase(TestCase):
         self.assertEqual(file.name, 'test.txt')
         self.assertIn(b'Avada Kedavra', file.readlines())
 
-    @unittest2.skipUnless(PIL, 'PIL is not installed')
+    @unittest.skipUnless(PIL, 'PIL is not installed')
     def test_make_inmemory_image_should_pass(self):
         file = files.create_inmemory_image('test.jpg', format='JPEG')
 

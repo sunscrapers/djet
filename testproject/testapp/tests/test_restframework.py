@@ -2,7 +2,7 @@ from django import test as django_test
 from django.contrib.auth.models import User
 from django.core.handlers.wsgi import WSGIRequest
 from rest_framework import generics, authentication, permissions, status, serializers
-from tests import models
+from testapp import models
 from djet import assertions, files, restframework as djet_restframework
 
 

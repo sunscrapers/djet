@@ -5,8 +5,9 @@ from django.core import mail
 from django.http import HttpResponse
 from django.test import TestCase
 from django.views import generic
+
 from djet import assertions, testcases
-from tests import models
+from testapp import models
 
 
 class MockView(generic.View):

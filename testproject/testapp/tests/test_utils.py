@@ -1,5 +1,5 @@
 from django.test import TestCase
-from tests import models
+from testapp import models
 
 
 class RefreshTest(TestCase):
