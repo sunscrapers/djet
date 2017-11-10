@@ -1,3 +1,6 @@
+Assertions
+==========
+
 We encourage you to import whole djet modules, not classes.
 
 .. code-block:: python

@@ -5,7 +5,7 @@ Welcome to djet's documentation!
     :maxdepth: 2
     :caption: Basics
 
-    installation
+    introduction
     getting_started
 
 .. toctree::
