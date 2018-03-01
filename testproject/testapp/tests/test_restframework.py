@@ -2,7 +2,10 @@ from django import test as django_test
 from django.contrib.auth.models import User
 from django.core.handlers.wsgi import WSGIRequest
 from rest_framework import generics, authentication, permissions, status, serializers
+from rest_framework.response import Response
+from rest_framework.viewsets import ViewSet
 from testapp import models
+
 from djet import assertions, files, restframework as djet_restframework
 
 
@@ -31,14 +34,12 @@ class APIRequestFactoryTest(django_test.TestCase):
 
 
 class MockModelSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = models.MockModel
         fields = ('field',)
 
 
 class MockFileModelSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = models.MockFileModel
         fields = ('field', 'file')
@@ -137,3 +138,25 @@ class MockFileModelCreateAPIViewTestCaseTest(
         response = self.view(request)
 
         self.assert_status_equal(response, status.HTTP_201_CREATED)
+
+
+class MockViewset(ViewSet):
+    def list(self, request):
+        return Response('list')
+
+    def retrieve(self, request, pk=None):
+        return Response('retrieve')
+
+
+class FooViewTest(djet_restframework.APIViewTestCase):
+    view_set = MockViewset
+
+    def test_list(self):
+        request = self.factory.get(action={'get': 'list'})
+        response = self.view(request)
+        self.assertEqual(response.data, 'list')
+
+    def test_retrieve(self):
+        request = self.factory.get(action={'get': 'retrieve'})
+        response = self.view(request)
+        self.assertEqual(response.data, 'retrieve')

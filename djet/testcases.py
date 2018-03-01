@@ -1,4 +1,5 @@
 from functools import partial
+
 import django
 from django import test as django_test
 
@@ -31,6 +32,7 @@ class MiddlewareType:
 
 
 class ViewTestCaseMixin(object):
+    view_set = None
     view_class = None
     view_function = None
     view_kwargs = None
@@ -163,6 +165,11 @@ class ViewTestCaseMixin(object):
             response = self.view_class.as_view(**self.get_view_kwargs())(request, *self.args, **self.kwargs)
         elif self.view_function:
             response = self.__class__.__dict__['view_function'](request, *self.args, **self.kwargs)
+        elif self.view_set:
+            params = request.META.pop('action')
+            response = self.view_set.as_view(params)(request, *self.args, **self.kwargs)
+        else:
+            raise Exception("Class {} should specify view_class, view_function or view_set field".format(self.__class__.__name__))
         return response
 
 
