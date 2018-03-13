@@ -47,6 +47,14 @@ class MockFileModelSerializer(serializers.ModelSerializer):
         fields = ('field', 'file')
 
 
+class MockViewSet(viewsets.ViewSet):
+    def list(self, request):
+        return RestFrameworkResponse('test')
+
+    def retrieve(self, request, pk=None):
+        return RestFrameworkResponse('test {}'.format(pk))
+
+
 class RetrieveUpdateAPIView(generics.RetrieveUpdateAPIView):
     queryset = models.MockModel.objects.all()
     serializer_class = MockModelSerializer
@@ -95,20 +103,6 @@ class RetrieveUpdateAPIViewTestCaseTest(assertions.StatusCodeAssertionsMixin, dj
         self.assertEqual(instance.field, data['field'])
 
 
-class LoginRequiredRetrieveAPIViewCaseTest(assertions.StatusCodeAssertionsMixin, djet_restframework.APIViewTestCase):
-    view_class = LoginRequiredRetrieveAPIView
-
-    def test_get_should_return_json(self):
-        user = User.objects.create_user(username='test_user', email='test@example.com')
-        instance = models.MockModel.objects.create(field='test')
-        request = self.factory.get(user=user)
-
-        response = self.view(request, pk=instance.pk)
-
-        self.assert_status_equal(response, status.HTTP_200_OK)
-        self.assertTrue('field' in response.data)
-
-
 class CreateAPIViewTestCaseTest(assertions.StatusCodeAssertionsMixin, djet_restframework.APIViewTestCase):
     view_class = CreateAPIView
 
@@ -121,6 +115,20 @@ class CreateAPIViewTestCaseTest(assertions.StatusCodeAssertionsMixin, djet_restf
         response = self.view(request)
 
         self.assert_status_equal(response, status.HTTP_201_CREATED)
+
+
+class LoginRequiredRetrieveAPIViewCaseTest(assertions.StatusCodeAssertionsMixin, djet_restframework.APIViewTestCase):
+    view_class = LoginRequiredRetrieveAPIView
+
+    def test_get_should_return_json(self):
+        user = User.objects.create_user(username='test_user', email='test@example.com')
+        instance = models.MockModel.objects.create(field='test')
+        request = self.factory.get(user=user)
+
+        response = self.view(request, pk=instance.pk)
+
+        self.assert_status_equal(response, status.HTTP_200_OK)
+        self.assertTrue('field' in response.data)
 
 
 class MockFileModelCreateAPIViewTestCaseTest(
@@ -140,14 +148,6 @@ class MockFileModelCreateAPIViewTestCaseTest(
         response = self.view(request)
 
         self.assert_status_equal(response, status.HTTP_201_CREATED)
-
-
-class MockViewSet(viewsets.ViewSet):
-    def list(self, request):
-        return RestFrameworkResponse('test')
-
-    def retrieve(self, request, pk=None):
-        return RestFrameworkResponse('test {}'.format(pk))
 
 
 class TestAPIViewTestCase(djet_restframework.APIViewTestCase):
