@@ -2,8 +2,11 @@ from django import test as django_test
 from django.contrib.auth.models import User
 from django.core.handlers.wsgi import WSGIRequest
 from rest_framework import generics, authentication, permissions, status, serializers
-from testapp import models
+from rest_framework import viewsets
+from rest_framework.response import Response as RestFrameworkResponse
 from djet import assertions, files, restframework as djet_restframework
+
+from testapp import models
 
 
 class APIRequestFactoryTest(django_test.TestCase):
@@ -137,3 +140,29 @@ class MockFileModelCreateAPIViewTestCaseTest(
         response = self.view(request)
 
         self.assert_status_equal(response, status.HTTP_201_CREATED)
+
+
+class MockViewSet(viewsets.ViewSet):
+    def list(self, request):
+        return RestFrameworkResponse('test')
+
+    def retrieve(self, request, pk=None):
+        return RestFrameworkResponse('test {}'.format(pk))
+
+
+class TestAPIViewTestCase(djet_restframework.APIViewTestCase):
+    viewset = MockViewSet
+
+    def test_list(self):
+        request = self.factory.get(actions={'get': 'list'})
+        response = self.view(request)
+
+        self.assertEqual(response.data, 'test')
+
+    def test_detail(self):
+        request = self.factory.get(actions={'get': 'retrieve'})
+
+        pk = 1
+        response = self.view(request, pk=pk)
+
+        self.assertEqual(response.data, 'test {}'.format(pk))

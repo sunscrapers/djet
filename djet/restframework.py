@@ -19,6 +19,13 @@ class APIViewTransactionTestCase(testcases.ViewTransactionTestCase):
 
 class APIViewTestCase(testcases.ViewTestCase):
     factory_class = APIRequestFactory
+    viewset = None
+
+    def _get_view(self, request):
+        if self.viewset:
+            actions = request.META.pop('actions')
+            return self.viewset.as_view(actions=actions, **self.get_view_kwargs())
+        return super(APIViewTestCase, self)._get_view(request)
 
 
 if django.VERSION >= (1, 4):

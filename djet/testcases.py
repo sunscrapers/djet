@@ -159,11 +159,21 @@ class ViewTestCaseMixin(object):
         return hasattr(mw_instance, middleware_type) and (not mw_types or middleware_type in mw_types)
 
     def _run_view(self, request):
-        if self.view_class:
-            response = self.view_class.as_view(**self.get_view_kwargs())(request, *self.args, **self.kwargs)
-        elif self.view_function:
-            response = self.__class__.__dict__['view_function'](request, *self.args, **self.kwargs)
+        view = self._get_view(request)
+
+        response = view(request, *self.args, **self.kwargs)
+
         return response
+
+    def _get_view(self, request):
+        if self.view_class:
+            view = self.view_class.as_view(**self.get_view_kwargs())
+        elif self.view_function:
+            view = self.__class__.__dict__['view_function']
+        else:
+            raise Exception('Missing view_class or view_function or viewset')
+
+        return view
 
 
 class ViewTransactionTestCase(ViewTestCaseMixin, django_test.TransactionTestCase):
