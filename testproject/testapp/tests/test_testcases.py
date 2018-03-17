@@ -64,6 +64,7 @@ class RequestFactoryTest(django_test.TestCase):
 
         self.assertEqual(request.method, 'PATCH')
 
+
 class MockView(generic.View):
 
     def mock_method(self):
@@ -240,3 +241,14 @@ class NewStyleMiddlewareTest(testcases.ViewTestCase):
 
         if django.VERSION >= (1, 10):
             self.assertTrue(response.new_middleware)
+
+
+class NoViewClassDefined(testcases.ViewTestCase):
+    def test_no_view_class_defined_raises_exception(self):
+        request = self.factory.get()
+
+        with self.assertRaises(Exception):
+            self.view(request)
+
+
+
