@@ -3,13 +3,13 @@ djet
 ====
 
 .. image:: https://img.shields.io/pypi/v/djet.svg
-  :target: https://pypi.org/project/djoser
+  :target: https://pypi.org/project/djet
 
 .. image:: https://img.shields.io/travis/sunscrapers/djet.svg
-  :target: https://travis-ci.org/sunscrapers/djoser
+  :target: https://travis-ci.org/sunscrapers/djet
 
 .. image:: https://img.shields.io/codecov/c/github/sunscrapers/djet.svg
-  :target: https://codecov.io/gh/sunscrapers/djoser
+  :target: https://codecov.io/gh/sunscrapers/djet
 
 **Django Extended Tests** is a set of helpers for easy testing of Django apps.
 
