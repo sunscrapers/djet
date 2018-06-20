@@ -8,7 +8,7 @@ break all the view tests.
 `One technique <http://tech.novapost.fr/django-unit-test-your-views-en.html>`__
 of performing the tests was presented at DjangoCon Europe 2013.
 We, at Sunscrapers have decided to do it in slightly different way,
-which is why djoser has been created.
+which is why **djet** has been created.
 
 Testing views
 -------------
