@@ -5,19 +5,16 @@ python:
   - "2.7"
   - "3.4"
   - "3.5"
+  - "3.6"
 
 env:
-  - DJANGO=1.10
+  - DJANGO=2.0
   - DJANGO=1.11
   - DJANGO=master
 
 matrix:
   fast_finish: true
   include:
-    - python: "3.6"
-      env: DJANGO=1.11
-    - python: "3.6"
-      env: DJANGO=master
     - python: "3.7-dev"
       env: DJANGO=1.11
     - python: "3.7-dev"
@@ -25,6 +22,8 @@ matrix:
   exclude:
     - python: "2.7"
       env: DJANGO=master
+    - python: "2.7"
+      env: DJANGO=2.0
     - python: "3.4"
       env: DJANGO=master
   allow_failures:
