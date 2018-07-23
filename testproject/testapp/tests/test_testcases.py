@@ -1,9 +1,10 @@
 import django
-from django.core.handlers.wsgi import WSGIRequest
 from django import test as django_test
+from django.core.handlers.wsgi import WSGIRequest
 from django.http import HttpResponse
 from django.template.response import TemplateResponse
 from django.views import generic
+
 from djet import testcases
 
 
@@ -142,6 +143,7 @@ class ViewTestCaseTest(ViewTestCaseTestMixin, testcases.ViewTestCase):
 class ViewTransactionTestCaseTest(ViewTestCaseTestMixin, testcases.ViewTransactionTestCase):
     pass
 
+
 if django.VERSION >= (1, 4):
     class ViewLiveServerTestCaseTest(ViewTestCaseTestMixin, testcases.ViewLiveServerTestCase):
         pass
@@ -249,6 +251,3 @@ class NoViewClassDefined(testcases.ViewTestCase):
 
         with self.assertRaises(Exception):
             self.view(request)
-
-
-

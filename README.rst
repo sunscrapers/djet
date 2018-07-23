@@ -33,8 +33,8 @@ Developed by `SUNSCRAPERS <http://sunscrapers.com>`_ with passion & patience.
 Requirements
 ============
 
-* **Python**: 2.7, 3.4+
-* **Django**: 1.10+
+* **Python**: 2.7 (Only Django 1.11), 3.4+
+* **Django**: 1.11, 2.0+
 * (optional) **Django REST Framework**: 3.7+
 
 Installation
