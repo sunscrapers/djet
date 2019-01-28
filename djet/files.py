@@ -1,8 +1,8 @@
-import os
 import datetime
+import os
+import six
 from django.core.files.storage import Storage, default_storage
 from django.core.files.uploadedfile import InMemoryUploadedFile
-from django.utils import six
 
 
 class InMemoryStorage(Storage):

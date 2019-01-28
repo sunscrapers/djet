@@ -39,3 +39,6 @@ ENV/
 # logs
 *.log
 .pytest_cache/
+
+# vim
+*.swp

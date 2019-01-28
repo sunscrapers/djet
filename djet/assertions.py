@@ -1,5 +1,8 @@
+import logging
+
 from django.contrib import messages
 from django.contrib.messages.storage.base import Message
+from django.conf import settings
 from django.core import mail
 from django.http import HttpResponseRedirect, HttpResponsePermanentRedirect
 
@@ -204,10 +207,50 @@ class InstanceAssertionsMixin(object):
         )
 
 
+class MemoryHandler(logging.Handler):
+
+    def __init__(self, *args, **kwargs):
+        super(MemoryHandler, self).__init__()
+        self.messages = []
+
+    def emit(self, record):
+        message = self.format(record)
+        self.messages.append(message)
+
+    def assert_logged(self, substring):
+        for message in self.messages:
+            if substring in message:
+                return
+        logged = '\n'.join(self.messages)
+        raise AssertionError(
+            'Substring {} not found. Logged:\n{}'.format(substring, logged)
+        )
+
+
+class LoggingAssertionsMixin(object):
+
+    def _pre_setup(self):
+        self.handler = MemoryHandler()
+        for logger_name, _ in settings.LOGGING.get('loggers', {}).items():
+            logger = logging.getLogger(logger_name)
+            logger.addHandler(self.handler)
+        super(LoggingAssertionsMixin, self)._pre_setup()
+
+    def _post_teardown(self):
+        super(LoggingAssertionsMixin, self)._post_teardown()
+        for logger_name, _ in settings.LOGGING.get('loggers', {}).items():
+            logger = logging.getLogger(logger_name)
+            logger.removeHandler(self.handler)
+
+    def assert_logged(self, message):
+        self.handler.assert_logged(message)
+
+
 class CompleteAssertionsMixin(
     StatusCodeAssertionsMixin,
     EmailAssertionsMixin,
-    MessagesAssertionsMixin,
     InstanceAssertionsMixin,
+    LoggingAssertionsMixin,
+    MessagesAssertionsMixin,
 ):
     pass
