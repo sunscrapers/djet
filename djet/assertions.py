@@ -10,27 +10,36 @@ class StatusCodeAssertionsMixin(object):
         HttpResponsePermanentRedirect.status_code
     ]
 
-    def assert_status_equal(self, response, status_code_or_response):
+    def assert_status_equal(
+            self, response, status_code_or_response, show_body_on_error=False
+    ):
         status_code = self._get_status_code(status_code_or_response)
-        self.assertEqual(
-            response.status_code,
-            status_code,
-            'Response status code is {0}, expected {1}'.format(
+        if response.status_code != status_code:
+            message = 'Response status code is {0}, expected {1}'.format(
                 response.status_code,
                 status_code,
             )
-        )
+            if response.status_code >= 400 and show_body_on_error:
+                response.render()
+                message += '\n. App responded:\n' + response.content
+            raise AssertionError(message)
 
-    def assert_status_in(self, response, status_codes_or_responses):
+    def assert_status_in(
+        self,
+        response,
+        status_codes_or_responses,
+        show_body_on_error=False
+    ):
         status_codes = list(map(self._get_status_code, status_codes_or_responses))
-        self.assertIn(
-            response.status_code,
-            status_codes,
-            'Response status code is {0}, expected one of: {1}'.format(
+        if response.status_code not in status_codes:
+            message = 'Response status code is {0}, expected one of: {1}'.format(
                 response.status_code,
                 ', '.join(str(code) for code in status_codes),
             )
-        )
+            if response.status_code >= 400 and show_body_on_error:
+                response.render()
+                message += '\n. App responded:\n' + response.content
+            raise AssertionError(message)
 
     def _get_redirect_assertion_message(self, response):
         return 'Response should redirect, but status code is {0}'.format(
