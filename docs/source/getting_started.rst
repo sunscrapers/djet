@@ -33,13 +33,17 @@ Assertions
 ``djet.assertions`` module. They have been created to simplify common
 testing scenarios and currently there is ``StatusCodeAssertionsMixin``,
 ``EmailAssertionsMixin``, ``MessagesAssertionsMixin`` and
-``InstanceAssertionsMixin`` full of useful assertions.
+``InstanceAssertionsMixin`` ``LoggingAssertionsMixin`` full of useful assertions.
 
 Remember that if you want to use assertions e.g. from ``MessagesAssertionsMixin``
 you must also add ``middleware_classes`` required by messages to your test case.
 We do not add them for you in mixin, because we believe those mixin classes shouldn't
 implicitly mess with middleware, because it would make it harder to understand
 what and why exactly is happening in your tests.
+
+You should also note that when using ``LoggingAssertionsMixing`` you need to
+call ``super()`` in your ``setUp()`` and ``tearDown()`` methods, bucause this
+mixin depends on its own setup.
 
 Testing file uploads
 --------------------

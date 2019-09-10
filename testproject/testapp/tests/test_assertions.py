@@ -1,3 +1,5 @@
+import logging
+
 from django.contrib import messages
 from django.contrib.messages.middleware import MessageMiddleware
 from django.contrib.sessions.middleware import SessionMiddleware
@@ -190,3 +192,21 @@ class InstanceAssertionsMixinTest(assertions.InstanceAssertionsMixin, TestCase):
         with self.assertRaisesRegexp(AssertionError, 'A MockModel was found'):
             with self.assert_instance_deleted(models.MockModel, field='value'):
                 pass
+
+
+logger = logging.getLogger(__name__)
+
+
+class LoggingAssertionsMixinTest(assertions.LoggingAssertionsMixin, TestCase):
+
+    def test_log(self):
+        logger.info('Test message')
+        self.assert_logged('Test message')
+
+    def test_log_fail(self):
+        logger.info('Test message')
+        with self.assertRaisesRegexp(
+            AssertionError,
+            'Substring Other message not found'
+        ):
+            self.assert_logged('Other message')
