@@ -2,32 +2,22 @@ sudo: false
 
 language: python
 python:
-  - "2.7"
-  - "3.4"
   - "3.5"
   - "3.6"
+  - "3.7"
+  - "3.8"
+  - "3.9"
 
 env:
-  - DJANGO=2.0
-  - DJANGO=1.11
+  - DJANGO=2.2
+  - DJANGO=3.1
+  - DJANGO=3.2
   - DJANGO=master
 
 matrix:
   fast_finish: true
-  include:
-    - python: "3.7-dev"
-      env: DJANGO=1.11
-    - python: "3.7-dev"
-      env: DJANGO=master
-  exclude:
-    - python: "2.7"
-      env: DJANGO=master
-    - python: "2.7"
-      env: DJANGO=2.0
-    - python: "3.4"
-      env: DJANGO=master
   allow_failures:
-    - python: "3.7-dev"
+    - python: "3.7"
     - env: DJANGO=master
 
 install:

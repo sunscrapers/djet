@@ -157,7 +157,7 @@ class InstanceAssertionsMixinTest(assertions.InstanceAssertionsMixin, TestCase):
         self.assert_instance_exists(models.MockModel, field='value')
 
     def test_assert_instance_exists_raises_assertion_error_when_no_instance(self):
-        with self.assertRaisesRegexp(AssertionError, 'No MockModel found'):
+        with self.assertRaisesRegex(AssertionError, 'No MockModel found'):
             self.assert_instance_exists(models.MockModel, field='value')
 
     def test_assert_instance_does_not_exist_passes_for_nonexisting_instances(self):
@@ -166,7 +166,7 @@ class InstanceAssertionsMixinTest(assertions.InstanceAssertionsMixin, TestCase):
     def test_assert_instance_does_not_exist_raises_assertion_error_when_instance_found(self):
         models.MockModel.objects.create(field='value')
 
-        with self.assertRaisesRegexp(AssertionError, 'A MockModel was found'):
+        with self.assertRaisesRegex(AssertionError, 'A MockModel was found'):
             self.assert_instance_does_not_exist(models.MockModel, field='value')
 
     def test_assert_instance_created_passes_when_instance_created(self):
@@ -174,7 +174,7 @@ class InstanceAssertionsMixinTest(assertions.InstanceAssertionsMixin, TestCase):
             models.MockModel.objects.create(field='value')
 
     def test_assert_instance_created_raises_assertion_error_when_not_created(self):
-        with self.assertRaisesRegexp(AssertionError, 'No MockModel found'):
+        with self.assertRaisesRegex(AssertionError, 'No MockModel found'):
             with self.assert_instance_created(models.MockModel, field='value'):
                 pass
 
@@ -187,6 +187,6 @@ class InstanceAssertionsMixinTest(assertions.InstanceAssertionsMixin, TestCase):
     def test_assert_instance_deleted_raises_assertion_error_when_not_deleted(self):
         models.MockModel.objects.create(field='value')
 
-        with self.assertRaisesRegexp(AssertionError, 'A MockModel was found'):
+        with self.assertRaisesRegex(AssertionError, 'A MockModel was found'):
             with self.assert_instance_deleted(models.MockModel, field='value'):
                 pass
