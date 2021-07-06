@@ -1,7 +1,7 @@
 import os
 import datetime
+from io import BytesIO
 
-import six
 from django.core.files.storage import Storage, default_storage
 from django.core.files.uploadedfile import InMemoryUploadedFile
 
@@ -75,7 +75,7 @@ class InMemoryStorageMixin(object):
 
 
 def create_inmemory_file(file_name='tmp.txt', content=b'', content_type=None):
-    stream = six.BytesIO()
+    stream = BytesIO()
     stream.write(content)
     file = InMemoryUploadedFile(stream, None, file_name, content_type, stream.tell(), None)
     file.seek(0)
@@ -89,7 +89,7 @@ def create_inmemory_image(file_name='tmp.png', format=None, width=200, height=20
         format = extension[1:].upper()
     if not content_type:
         content_type = 'image/{0}'.format(format)
-    stream = six.BytesIO()
+    stream = BytesIO()
     size = (width, height)
     color = (255, 0, 0, 0)
     image = Image.new('RGBA', size, color)
