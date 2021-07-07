@@ -17,6 +17,7 @@ Welcome to djet's documentation!
     assertions
     files
     integration_with_drf
+    utilities
 
 Indices and tables
 ==================

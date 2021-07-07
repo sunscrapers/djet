@@ -31,3 +31,8 @@ INSTALLED_APPS = (
 )
 
 STATIC_URL = '/static/'
+
+TEST_DICT = {
+    'parameter1': 'value1',
+    'parameter2': 'value2',
+}
