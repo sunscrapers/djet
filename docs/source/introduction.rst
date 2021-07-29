@@ -30,6 +30,6 @@ Requirements
 All of provided versions are validated via testing pipeline to ensure that
 they are supported:
 
-* **Python**: 2.7, 3.4+
-* **Django**: 1.10+
-* **Django REST Framework**: 3.7+ (optional)
+* **Python**: 3.6+
+* **Django**: 2.2, 3.1+
+* **Django REST Framework**: 3.11+ (optional)
