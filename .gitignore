@@ -39,3 +39,5 @@ ENV/
 # logs
 *.log
 .pytest_cache/
+
+poetry.lock

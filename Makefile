@@ -1,13 +1,14 @@
 init:
-	pipenv install --dev
-	pipenv run pip install -e .
+	poetry install
+	poetry plugin add poetry-version-plugin
+	poetry run pre-commit install
 
 test:
-	pipenv run py.test --capture=no --cov-report term-missing --cov-report html --cov=djet testproject/
-	pipenv run flake8 .
+	poetry run py.test --capture=no --cov-report term-missing --cov-report html --cov=djet testproject/
+	poetry run flake8 .
 
 migrate:
-	pipenv run python testproject/manage.py migrate
+	poetry run python testproject/manage.py migrate
 
 runserver:
-	pipenv run python testproject/manage.py runserver
+	poetry run python testproject/manage.py runserver

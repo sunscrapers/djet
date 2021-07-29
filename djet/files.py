@@ -1,5 +1,5 @@
-import os
 import datetime
+import os
 from io import BytesIO
 
 from django.core.files.storage import Storage, default_storage
@@ -7,7 +7,6 @@ from django.core.files.uploadedfile import InMemoryUploadedFile
 
 
 class InMemoryStorage(Storage):
-
     def __init__(self):
         self.files = {}
 
@@ -28,9 +27,9 @@ class InMemoryStorage(Storage):
         directories, files = set(), []
         for name in self.files:
             if name.startswith(path):
-                without_path = name[len(path):]
+                without_path = name[len(path) :]
                 try:
-                    slash_index = without_path.index('/')
+                    slash_index = without_path.index("/")
                     directories.add(without_path[:slash_index])
                 except ValueError:
                     files.append(without_path)
@@ -74,26 +73,33 @@ class InMemoryStorageMixin(object):
         default_storage._wrapped = self._wrapped_storage
 
 
-def create_inmemory_file(file_name='tmp.txt', content=b'', content_type=None):
+def create_inmemory_file(file_name="tmp.txt", content=b"", content_type=None):
     stream = BytesIO()
     stream.write(content)
-    file = InMemoryUploadedFile(stream, None, file_name, content_type, stream.tell(), None)
+    file = InMemoryUploadedFile(
+        stream, None, file_name, content_type, stream.tell(), None
+    )
     file.seek(0)
     return file
 
 
-def create_inmemory_image(file_name='tmp.png', format=None, width=200, height=200, content_type=None):
+def create_inmemory_image(
+    file_name="tmp.png", format=None, width=200, height=200, content_type=None
+):
     from PIL import Image
+
     if not format:
         _, extension = os.path.splitext(file_name)
         format = extension[1:].upper()
     if not content_type:
-        content_type = 'image/{0}'.format(format)
+        content_type = "image/{0}".format(format)
     stream = BytesIO()
     size = (width, height)
     color = (255, 0, 0, 0)
-    image = Image.new('RGBA', size, color)
+    image = Image.new("RGBA", size, color)
     image.save(stream, format=format)
-    image_file = InMemoryUploadedFile(stream, None, file_name, content_type, stream.tell(), None)
+    image_file = InMemoryUploadedFile(
+        stream, None, file_name, content_type, stream.tell(), None
+    )
     image_file.seek(0)
     return image_file

@@ -1,0 +1,86 @@
+[tool.poetry]
+name = "djet"
+version = "0.0.0"  # placeholder, version governed by plugin
+description = "Set of helpers for easy testing of Django apps."
+authors = ["Sunscrapers <info@sunscrapers.com>"]
+license = "MIT"
+readme = "README.rst"
+documentation = "https://djet.readthedocs.io/"
+repository = "https://github.com/sunscrapers/djet"
+classifiers = [
+    'Development Status :: 3 - Alpha',
+    'Environment :: Web Environment',
+    'Framework :: Django',
+    'Intended Audience :: Developers',
+    'License :: OSI Approved :: MIT License',
+    'Operating System :: OS Independent',
+    'Programming Language :: Python',
+    'Programming Language :: Python :: 3',
+    'Topic :: Software Development :: Testing'
+]
+
+[tool.poetry.dependencies]
+python = "^3.6.2"
+djangorestframework = {version = "^3.12.4", optional = true}
+Pillow = "^8.3.1"
+pytest = {version = "^6.2.4", optional = true}
+codecov = {version = "^2.1.11", optional = true}
+coverage = {version = "^5.5", optional = true}
+pytest-cov = {version = "^2.12.1", optional = true}
+pytest-django = {version = "^4.4.0", optional = true}
+
+[tool.poetry.dev-dependencies]
+tox = "^3.23.1"
+pre-commit = "^2.13.0"
+black = "^21.6b0"
+isort = "^5.8.0"
+ipdb = "^0.13.9"
+flake8 = "^3.9.2"
+
+[tool.poetry.extras]
+test = [
+    "pytest",
+    "codecov",
+    "coverage",
+    "pytest-cov",
+    "pytest-django",
+]
+
+
+[tool.black]
+line-length = 88
+target-version = ['py36']
+include = '\.pyi?$'
+exclude = '''
+
+(
+  /(
+      \.cache
+    | \.eggs
+    | \.git
+    | \.hg
+    | \.mypy_cache
+    | \.pytest_cache
+    | \.tox
+    | \.venv
+    | __pycache__
+    | _build
+    | buck-out
+    | build
+    | dist
+    | docs
+    | .+/migrations
+  )/
+
+)
+'''
+
+[tool.poetry-version-plugin]
+source = "init"
+
+[tool.isort]
+profile="black"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

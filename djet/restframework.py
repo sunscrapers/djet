@@ -1,14 +1,14 @@
 import django
 from rest_framework import test
+
 from djet import testcases
 
 
 class APIRequestFactory(testcases.RequestFactory, test.APIRequestFactory):
-
     def _request(self, method, **kwargs):
         request = super(APIRequestFactory, self)._request(method, **kwargs)
-        user = kwargs.get('user')
-        token = kwargs.get('token')
+        user = kwargs.get("user")
+        token = kwargs.get("token")
         test.force_authenticate(request, user, token)
         return request
 
@@ -23,15 +23,18 @@ class APIViewTestCase(testcases.ViewTestCase):
 
     def _get_view(self, request):
         if self.viewset:
-            actions = request.META.pop('actions')
+            actions = request.META.pop("actions")
             return self.viewset.as_view(actions=actions, **self.get_view_kwargs())
         return super(APIViewTestCase, self)._get_view(request)
 
 
 if django.VERSION >= (1, 4):
+
     class APIViewLiveServerTestCase(testcases.ViewLiveServerTestCase):
         factory_class = APIRequestFactory
 
+
 if django.VERSION >= (1, 5):
+
     class APIViewSimpleTestCase(testcases.ViewSimpleTestCase):
         factory_class = APIRequestFactory

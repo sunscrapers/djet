@@ -9,7 +9,6 @@ from djet import testcases
 
 
 class MockMiddleware(object):
-
     def process_request(self, request):
         request.process_request_was_here = True
 
@@ -38,7 +37,6 @@ class NewStyleMiddleware(object):
 
 
 class ProcessViewMockMiddleware(object):
-
     def process_view(self, request, view_func, view_args, view_kwargs):
         response = HttpResponse()
         response.process_view_was_here = True
@@ -46,7 +44,6 @@ class ProcessViewMockMiddleware(object):
 
 
 class RequestFactoryTest(django_test.TestCase):
-
     def setUp(self):
         self.factory = testcases.RequestFactory()
 
@@ -58,16 +55,15 @@ class RequestFactoryTest(django_test.TestCase):
     def test_init_should_create_shortcuts(self):
         request = self.factory.get()
 
-        self.assertEqual(request.method, 'GET')
+        self.assertEqual(request.method, "GET")
 
     def test_create_patch_request_factory(self):
         request = self.factory.patch()
 
-        self.assertEqual(request.method, 'PATCH')
+        self.assertEqual(request.method, "PATCH")
 
 
 class MockView(generic.View):
-
     def mock_method(self):
         self.mock_method_called = True
 
@@ -80,15 +76,13 @@ class KwargsMockView(generic.View):
 
 
 class RaiseExceptionMockView(generic.View):
-
     def get(self, *args, **kwargs):
         raise Exception()
 
 
 class TemplateResponseMockView(generic.View):
-
     def get(self, request, *args, **kwargs):
-        return TemplateResponse(request, 'template.html')
+        return TemplateResponse(request, "template.html")
 
 
 def mock_function_view(request):
@@ -111,13 +105,13 @@ class ViewTestCaseTestMixin(object):
         self.assertTrue(view_object.mock_method_called)
 
     def test_view_object_should_have_request_and_arguments(self):
-        request = 'request'
-        args = ('a', 'b')
-        kwargs = {'c': 'c'}
+        request = "request"
+        args = ("a", "b")
+        kwargs = {"c": "c"}
 
         view_object = self.create_view_object(request, *args, **kwargs)
 
-        self.assertEqual(view_object.request, 'request')
+        self.assertEqual(view_object.request, "request")
         self.assertEqual(view_object.args, args)
         self.assertEqual(view_object.kwargs, kwargs)
 
@@ -140,15 +134,22 @@ class ViewTestCaseTest(ViewTestCaseTestMixin, testcases.ViewTestCase):
     pass
 
 
-class ViewTransactionTestCaseTest(ViewTestCaseTestMixin, testcases.ViewTransactionTestCase):
+class ViewTransactionTestCaseTest(
+    ViewTestCaseTestMixin, testcases.ViewTransactionTestCase
+):
     pass
 
 
 if django.VERSION >= (1, 4):
-    class ViewLiveServerTestCaseTest(ViewTestCaseTestMixin, testcases.ViewLiveServerTestCase):
+
+    class ViewLiveServerTestCaseTest(
+        ViewTestCaseTestMixin, testcases.ViewLiveServerTestCase
+    ):
         pass
 
+
 if django.VERSION >= (1, 5):
+
     class ViewSimpleTestCaseTest(ViewTestCaseTestMixin, testcases.ViewSimpleTestCase):
         pass
 
@@ -202,19 +203,19 @@ class ProcessOnlyIndicatedMiddlewaresViewTestCaseTest(testcases.ViewTestCase):
 
 class KwargsViewTestCaseTest(testcases.ViewTestCase):
     view_class = KwargsMockView
-    view_kwargs = {'test': 'test'}
+    view_kwargs = {"test": "test"}
 
     def test_view_should_have_kwargs_when_view_kwargs_specified(self):
         request = self.factory.get()
 
         response = self.view(request)
 
-        self.assertEqual(response, 'test')
+        self.assertEqual(response, "test")
 
     def test_view_object_should_have_kwargs_when_view_kwargs_specified(self):
         view_object = self.create_view_object()
 
-        self.assertEqual(view_object.test, 'test')
+        self.assertEqual(view_object.test, "test")
 
 
 class ViewTestCaseFunctionViewTest(testcases.ViewTestCase):

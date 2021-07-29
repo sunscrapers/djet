@@ -1,48 +1,45 @@
 from django.contrib import messages
 from django.contrib.messages.storage.base import Message
 from django.core import mail
-from django.http import HttpResponseRedirect, HttpResponsePermanentRedirect
+from django.http import HttpResponsePermanentRedirect, HttpResponseRedirect
 
 
 class StatusCodeAssertionsMixin(object):
     redirect_codes = [
         HttpResponseRedirect.status_code,
-        HttpResponsePermanentRedirect.status_code
+        HttpResponsePermanentRedirect.status_code,
     ]
 
     def assert_status_equal(
-            self, response, status_code_or_response, show_body_on_error=False
+        self, response, status_code_or_response, show_body_on_error=False
     ):
         status_code = self._get_status_code(status_code_or_response)
         if response.status_code != status_code:
-            message = 'Response status code is {0}, expected {1}'.format(
+            message = "Response status code is {0}, expected {1}".format(
                 response.status_code,
                 status_code,
             )
             if response.status_code >= 400 and show_body_on_error:
                 response.render()
-                message += '\n. App responded:\n' + response.content
+                message += "\n. App responded:\n" + response.content
             raise AssertionError(message)
 
     def assert_status_in(
-        self,
-        response,
-        status_codes_or_responses,
-        show_body_on_error=False
+        self, response, status_codes_or_responses, show_body_on_error=False
     ):
         status_codes = list(map(self._get_status_code, status_codes_or_responses))
         if response.status_code not in status_codes:
-            message = 'Response status code is {0}, expected one of: {1}'.format(
+            message = "Response status code is {0}, expected one of: {1}".format(
                 response.status_code,
-                ', '.join(str(code) for code in status_codes),
+                ", ".join(str(code) for code in status_codes),
             )
             if response.status_code >= 400 and show_body_on_error:
                 response.render()
-                message += '\n. App responded:\n' + response.content
+                message += "\n. App responded:\n" + response.content
             raise AssertionError(message)
 
     def _get_redirect_assertion_message(self, response):
-        return 'Response should redirect, but status code is {0}'.format(
+        return "Response should redirect, but status code is {0}".format(
             response.status_code
         )
 
@@ -57,21 +54,22 @@ class StatusCodeAssertionsMixin(object):
             self._get_redirect_assertion_message(response),
         )
         if expected_url:
-            location_header = response._headers.get('location', None)
+            location_header = response._headers.get("location", None)
             self.assertEqual(
                 location_header,
-                ('Location', str(expected_url)),
-                'Response should redirect to {0}, but it redirects to {1} instead'.format(
+                ("Location", str(expected_url)),
+                "Response should redirect to {0}, "
+                "but it redirects to {1} instead".format(
                     expected_url,
                     location_header[1],
-                )
+                ),
             )
 
     def assert_not_redirect(self, response):
         self.assertNotIn(
             response.status_code,
             self.redirect_codes,
-            self._get_redirect_assertion_message(response)
+            self._get_redirect_assertion_message(response),
         )
 
     def _get_status_code(self, status_code_or_response):
@@ -86,10 +84,10 @@ class EmailAssertionsMixin(object):
         self.assertEqual(
             len(mail.outbox),
             count,
-            'There is {0} e-mails in mailbox, expected {1}'.format(
+            "There is {0} e-mails in mailbox, expected {1}".format(
                 len(mail.outbox),
                 count,
-            )
+            ),
         )
 
     def _is_email_matching_criteria(self, email, **kwargs):
@@ -103,18 +101,19 @@ class EmailAssertionsMixin(object):
             self.assertEqual(
                 getattr(email, key),
                 value,
-                'Email does not match criteria, expected {0} to be {1} but it is {2}'.format(
+                "Email does not match criteria, "
+                "expected {0} to be {1} but it is {2}".format(
                     key,
                     value,
                     getattr(email, key),
-                )
+                ),
             )
 
     def assert_email_exists(self, **kwargs):
         for email in mail.outbox:
             if self._is_email_matching_criteria(email, **kwargs):
                 return
-        raise AssertionError('Email matching criteria was not sent')
+        raise AssertionError("Email matching criteria was not sent")
 
 
 class MessagesAssertionsMixin(object):
@@ -123,17 +122,17 @@ class MessagesAssertionsMixin(object):
         self.assertEqual(
             sent,
             count,
-            'There was {0} messages sent, expected {1}.'.format(
+            "There was {0} messages sent, expected {1}.".format(
                 sent,
                 count,
-            )
+            ),
         )
 
     def assert_message_exists(self, request, level, message):
         self.assertIn(
             Message(level=level, message=message),
             messages.get_messages(request),
-            'Message matching criteria does not exist'
+            "Message matching criteria does not exist",
         )
 
 
@@ -141,6 +140,7 @@ class _InstanceContext(object):
     """
     Context manager returned by assert_instance_created/deleted.
     """
+
     def __init__(self, enter_assertion, exit_assertion, model_class, **kwargs):
         self.enter_assertion = enter_assertion
         self.exit_assertion = exit_assertion
@@ -160,12 +160,14 @@ class InstanceAssertionsMixin(object):
     """
     ORM-related assertions for testing instance creation and deletion.
     """
+
     def assert_instance_exists(self, model_class, **kwargs):
         try:
             obj = model_class._default_manager.get(**kwargs)
             self.assertIsNotNone(obj)
         except model_class.DoesNotExist:
-            raise AssertionError('No {0} found matching the criteria.'.format(
+            raise AssertionError(
+                "No {0} found matching the criteria.".format(
                     model_class.__name__,
                 )
             )
@@ -173,10 +175,12 @@ class InstanceAssertionsMixin(object):
     def assert_instance_does_not_exist(self, model_class, **kwargs):
         try:
             instance = model_class._default_manager.get(**kwargs)
-            raise AssertionError('A {0} was found matching the criteria. ({1})'.format(
-                model_class.__name__,
-                instance,
-            ))
+            raise AssertionError(
+                "A {0} was found matching the criteria. ({1})".format(
+                    model_class.__name__,
+                    instance,
+                )
+            )
         except model_class.DoesNotExist:
             pass
 
@@ -193,7 +197,7 @@ class InstanceAssertionsMixin(object):
             self.assert_instance_does_not_exist,
             self.assert_instance_exists,
             model_class,
-            **kwargs
+            **kwargs,
         )
 
     def assert_instance_deleted(self, model_class, **kwargs):
@@ -209,7 +213,7 @@ class InstanceAssertionsMixin(object):
             self.assert_instance_exists,
             self.assert_instance_does_not_exist,
             model_class,
-            **kwargs
+            **kwargs,
         )
 
 

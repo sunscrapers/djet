@@ -1,16 +1,22 @@
 from django import test as django_test
 from django.contrib.auth.models import User
 from django.core.handlers.wsgi import WSGIRequest
-from rest_framework import generics, authentication, permissions, status, serializers
-from rest_framework import viewsets
+from rest_framework import (
+    authentication,
+    generics,
+    permissions,
+    serializers,
+    status,
+    viewsets,
+)
 from rest_framework.response import Response as RestFrameworkResponse
-from djet import assertions, files, restframework as djet_restframework
-
 from testapp import models
+
+from djet import assertions, files
+from djet import restframework as djet_restframework
 
 
 class APIRequestFactoryTest(django_test.TestCase):
-
     def setUp(self):
         self.factory = djet_restframework.APIRequestFactory()
 
@@ -22,10 +28,12 @@ class APIRequestFactoryTest(django_test.TestCase):
     def test_init_should_create_shortcuts(self):
         request = self.factory.get()
 
-        self.assertEqual(request.method, 'GET')
+        self.assertEqual(request.method, "GET")
 
     def test_create_request_with_user_should_force_authenticate_user(self):
-        user_mock = User.objects.create_user(username='test_user', email='test@example.com')
+        user_mock = User.objects.create_user(
+            username="test_user", email="test@example.com"
+        )
 
         request = self.factory.get(user=user_mock)
 
@@ -34,25 +42,23 @@ class APIRequestFactoryTest(django_test.TestCase):
 
 
 class MockModelSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = models.MockModel
-        fields = ('field',)
+        fields = ("field",)
 
 
 class MockFileModelSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = models.MockFileModel
-        fields = ('field', 'file')
+        fields = ("field", "file")
 
 
 class MockViewSet(viewsets.ViewSet):
     def list(self, request):
-        return RestFrameworkResponse('test')
+        return RestFrameworkResponse("test")
 
     def retrieve(self, request, pk=None):
-        return RestFrameworkResponse('test {}'.format(pk))
+        return RestFrameworkResponse("test {}".format(pk))
 
 
 class RetrieveUpdateAPIView(generics.RetrieveUpdateAPIView):
@@ -77,22 +83,24 @@ class MockFileModelCreateAPIView(generics.CreateAPIView):
     serializer_class = MockFileModelSerializer
 
 
-class RetrieveUpdateAPIViewTestCaseTest(assertions.StatusCodeAssertionsMixin, djet_restframework.APIViewTestCase):
+class RetrieveUpdateAPIViewTestCaseTest(
+    assertions.StatusCodeAssertionsMixin, djet_restframework.APIViewTestCase
+):
     view_class = RetrieveUpdateAPIView
 
     def test_get_should_return_json(self):
-        instance = models.MockModel.objects.create(field='test')
+        instance = models.MockModel.objects.create(field="test")
         request = self.factory.get()
 
         response = self.view(request, pk=instance.pk)
 
         self.assert_status_equal(response, status.HTTP_200_OK)
-        self.assertTrue('field' in response.data)
+        self.assertTrue("field" in response.data)
 
     def test_put_should_update_model(self):
-        instance = models.MockModel.objects.create(field='test value')
+        instance = models.MockModel.objects.create(field="test value")
         data = {
-            'field': 'test new value',
+            "field": "test new value",
         }
         request = self.factory.put(data=data)
 
@@ -100,50 +108,54 @@ class RetrieveUpdateAPIViewTestCaseTest(assertions.StatusCodeAssertionsMixin, dj
 
         self.assert_status_equal(response, status.HTTP_200_OK)
         instance.refresh_from_db()
-        self.assertEqual(instance.field, data['field'])
+        self.assertEqual(instance.field, data["field"])
 
 
-class CreateAPIViewTestCaseTest(assertions.StatusCodeAssertionsMixin, djet_restframework.APIViewTestCase):
+class CreateAPIViewTestCaseTest(
+    assertions.StatusCodeAssertionsMixin, djet_restframework.APIViewTestCase
+):
     view_class = CreateAPIView
 
     def test_post_should_create_model(self):
         data = {
-            'field': 'test value',
+            "field": "test value",
         }
-        request = self.factory.post(data=data, format='json')
+        request = self.factory.post(data=data, format="json")
 
         response = self.view(request)
 
         self.assert_status_equal(response, status.HTTP_201_CREATED)
 
 
-class LoginRequiredRetrieveAPIViewCaseTest(assertions.StatusCodeAssertionsMixin, djet_restframework.APIViewTestCase):
+class LoginRequiredRetrieveAPIViewCaseTest(
+    assertions.StatusCodeAssertionsMixin, djet_restframework.APIViewTestCase
+):
     view_class = LoginRequiredRetrieveAPIView
 
     def test_get_should_return_json(self):
-        user = User.objects.create_user(username='test_user', email='test@example.com')
-        instance = models.MockModel.objects.create(field='test')
+        user = User.objects.create_user(username="test_user", email="test@example.com")
+        instance = models.MockModel.objects.create(field="test")
         request = self.factory.get(user=user)
 
         response = self.view(request, pk=instance.pk)
 
         self.assert_status_equal(response, status.HTTP_200_OK)
-        self.assertTrue('field' in response.data)
+        self.assertTrue("field" in response.data)
 
 
 class MockFileModelCreateAPIViewTestCaseTest(
     assertions.StatusCodeAssertionsMixin,
     files.InMemoryStorageMixin,
-    djet_restframework.APIViewTestCase
+    djet_restframework.APIViewTestCase,
 ):
     view_class = MockFileModelCreateAPIView
 
     def test_post_should_create_model(self):
         data = {
-            'field': 'test value',
-            'file': files.create_inmemory_file('test.txt', content=b'Hello multipart!'),
+            "field": "test value",
+            "file": files.create_inmemory_file("test.txt", content=b"Hello multipart!"),
         }
-        request = self.factory.post(data=data, format='multipart')
+        request = self.factory.post(data=data, format="multipart")
 
         response = self.view(request)
 
@@ -154,15 +166,15 @@ class TestAPIViewTestCase(djet_restframework.APIViewTestCase):
     viewset = MockViewSet
 
     def test_list(self):
-        request = self.factory.get(actions={'get': 'list'})
+        request = self.factory.get(actions={"get": "list"})
         response = self.view(request)
 
-        self.assertEqual(response.data, 'test')
+        self.assertEqual(response.data, "test")
 
     def test_detail(self):
-        request = self.factory.get(actions={'get': 'retrieve'})
+        request = self.factory.get(actions={"get": "retrieve"})
 
         pk = 1
         response = self.view(request, pk=pk)
 
-        self.assertEqual(response.data, 'test {}'.format(pk))
+        self.assertEqual(response.data, "test {}".format(pk))
