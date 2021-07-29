@@ -6,7 +6,7 @@ name = "pypi"
 [packages]
 
 "c1e7f61" = {path = ".", editable = true}
-pillow = "==4.3.0"
+pillow = "==8.2.0"
 djangorestframework = "*"
 django = "*"
 
