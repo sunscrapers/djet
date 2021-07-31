@@ -1,6 +1,5 @@
 from functools import partial
 
-import django
 from django import test as django_test
 
 
@@ -93,7 +92,7 @@ class ViewTestCaseMixin(object):
         middleware_classes = self.middleware_classes or []
         for mw_class in middleware_classes:
             mw_class, mw_types = self._unpack_middleware(mw_class)
-            mw_instance = mw_class()
+            mw_instance = mw_class(self._get_response)
 
             if self._should_add_middleware(
                 mw_instance, mw_types, MiddlewareType.PROCESS_REQUEST
@@ -209,13 +208,9 @@ class ViewTestCase(ViewTestCaseMixin, django_test.TestCase):
     pass
 
 
-if django.VERSION >= (1, 4):
-
-    class ViewLiveServerTestCase(ViewTestCaseMixin, django_test.LiveServerTestCase):
-        pass
+class ViewLiveServerTestCase(ViewTestCaseMixin, django_test.LiveServerTestCase):
+    pass
 
 
-if django.VERSION >= (1, 5):
-
-    class ViewSimpleTestCase(ViewTestCaseMixin, django_test.SimpleTestCase):
-        pass
+class ViewSimpleTestCase(ViewTestCaseMixin, django_test.SimpleTestCase):
+    pass

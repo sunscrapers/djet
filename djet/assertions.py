@@ -54,7 +54,7 @@ class StatusCodeAssertionsMixin(object):
             self._get_redirect_assertion_message(response),
         )
         if expected_url:
-            location_header = response._headers.get("location", None)
+            location_header = response.headers.get("Location", None)
             self.assertEqual(
                 location_header,
                 ("Location", str(expected_url)),

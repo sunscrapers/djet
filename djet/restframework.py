@@ -1,4 +1,3 @@
-import django
 from rest_framework import test
 
 from djet import testcases
@@ -28,13 +27,9 @@ class APIViewTestCase(testcases.ViewTestCase):
         return super(APIViewTestCase, self)._get_view(request)
 
 
-if django.VERSION >= (1, 4):
-
-    class APIViewLiveServerTestCase(testcases.ViewLiveServerTestCase):
-        factory_class = APIRequestFactory
+class APIViewLiveServerTestCase(testcases.ViewLiveServerTestCase):
+    factory_class = APIRequestFactory
 
 
-if django.VERSION >= (1, 5):
-
-    class APIViewSimpleTestCase(testcases.ViewSimpleTestCase):
-        factory_class = APIRequestFactory
+class APIViewSimpleTestCase(testcases.ViewSimpleTestCase):
+    factory_class = APIRequestFactory
