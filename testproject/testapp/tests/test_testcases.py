@@ -1,4 +1,3 @@
-import django
 from django import test as django_test
 from django.core.handlers.wsgi import WSGIRequest
 from django.http import HttpResponse
@@ -9,6 +8,9 @@ from djet import testcases
 
 
 class MockMiddleware(object):
+    def __init__(self, get_response):
+        self.get_response = get_response
+
     def process_request(self, request):
         request.process_request_was_here = True
 
@@ -37,6 +39,9 @@ class NewStyleMiddleware(object):
 
 
 class ProcessViewMockMiddleware(object):
+    def __init__(self, get_response):
+        self.get_response = get_response
+
     def process_view(self, request, view_func, view_args, view_kwargs):
         response = HttpResponse()
         response.process_view_was_here = True
@@ -140,18 +145,14 @@ class ViewTransactionTestCaseTest(
     pass
 
 
-if django.VERSION >= (1, 4):
-
-    class ViewLiveServerTestCaseTest(
-        ViewTestCaseTestMixin, testcases.ViewLiveServerTestCase
-    ):
-        pass
+class ViewLiveServerTestCaseTest(
+    ViewTestCaseTestMixin, testcases.ViewLiveServerTestCase
+):
+    pass
 
 
-if django.VERSION >= (1, 5):
-
-    class ViewSimpleTestCaseTest(ViewTestCaseTestMixin, testcases.ViewSimpleTestCase):
-        pass
+class ViewSimpleTestCaseTest(ViewTestCaseTestMixin, testcases.ViewSimpleTestCase):
+    pass
 
 
 class ProcessExceptionMiddlewareViewTestCaseTest(testcases.ViewTestCase):
@@ -236,14 +237,9 @@ class NewStyleMiddlewareTest(testcases.ViewTestCase):
     def test_new_middleware(self):
         request = self.factory.get()
 
-        try:
-            response = self.view(request)
-        except NotImplementedError:
-            if django.VERSION >= (1, 10):
-                assert True
+        response = self.view(request)
 
-        if django.VERSION >= (1, 10):
-            self.assertTrue(response.new_middleware)
+        self.assertTrue(response.new_middleware)
 
 
 class NoViewClassDefined(testcases.ViewTestCase):
